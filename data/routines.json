@@ -1,0 +1,110 @@
+[
+  {
+    "id": "full-body-8",
+    "name": "Full Body 8",
+    "description": "One move per major muscle group — beginner-friendly full-body circuit.",
+    "isStarter": true,
+    "entries": [
+      {"exerciseId": "squat", "sets": 3, "reps": 12, "restSec": 60, "targetIncline": 4},
+      {"exerciseId": "chest-press", "sets": 3, "reps": 10, "restSec": 60, "targetIncline": 5},
+      {"exerciseId": "row", "sets": 3, "reps": 10, "restSec": 60, "targetIncline": 5},
+      {"exerciseId": "shoulder-press", "sets": 3, "reps": 10, "restSec": 60, "targetIncline": 5},
+      {"exerciseId": "biceps-curl", "sets": 2, "reps": 12, "restSec": 45, "targetIncline": 4},
+      {"exerciseId": "triceps-extension", "sets": 2, "reps": 12, "restSec": 45, "targetIncline": 4},
+      {"exerciseId": "crunch", "sets": 2, "reps": 20, "restSec": 30, "targetIncline": 3},
+      {"exerciseId": "hyperextension", "sets": 2, "reps": 15, "restSec": 30, "targetIncline": 3}
+    ]
+  },
+  {
+    "id": "upper-push-pull",
+    "name": "Upper Push / Pull",
+    "description": "Chest, back, shoulders and arms — balanced push and pull movements.",
+    "isStarter": true,
+    "entries": [
+      {"exerciseId": "chest-press", "sets": 4, "reps": 10, "restSec": 60, "targetIncline": 5},
+      {"exerciseId": "chest-fly", "sets": 3, "reps": 12, "restSec": 60, "targetIncline": 4},
+      {"exerciseId": "row", "sets": 4, "reps": 10, "restSec": 60, "targetIncline": 5},
+      {"exerciseId": "back-fly", "sets": 3, "reps": 12, "restSec": 60, "targetIncline": 4},
+      {"exerciseId": "lateral-deltoid-raise", "sets": 3, "reps": 12, "restSec": 45, "targetIncline": 4},
+      {"exerciseId": "upright-row", "sets": 3, "reps": 10, "restSec": 45, "targetIncline": 4},
+      {"exerciseId": "biceps-curl", "sets": 3, "reps": 12, "restSec": 45, "targetIncline": 4},
+      {"exerciseId": "triceps-extension", "sets": 3, "reps": 12, "restSec": 45, "targetIncline": 4}
+    ]
+  },
+  {
+    "id": "lower-and-core",
+    "name": "Lower & Core",
+    "description": "Legs and abdominals — build lower body strength and core stability.",
+    "isStarter": true,
+    "entries": [
+      {"exerciseId": "squat", "sets": 4, "reps": 12, "restSec": 75, "targetIncline": 5},
+      {"exerciseId": "wide-squat", "sets": 3, "reps": 12, "restSec": 60, "targetIncline": 5},
+      {"exerciseId": "leg-curl", "sets": 3, "reps": 12, "restSec": 60, "targetIncline": 4},
+      {"exerciseId": "front-lunge", "sets": 3, "reps": 12, "restSec": 60, "targetIncline": 4},
+      {"exerciseId": "calf-raise", "sets": 3, "reps": 20, "restSec": 45, "targetIncline": 3},
+      {"exerciseId": "crunch", "sets": 3, "reps": 20, "restSec": 30, "targetIncline": 3},
+      {"exerciseId": "trunk-rotation", "sets": 2, "reps": 20, "restSec": 30, "targetIncline": 3},
+      {"exerciseId": "side-plank", "sets": 2, "reps": 30, "restSec": 30, "targetIncline": 2}
+    ]
+  },
+  {
+    "id": "abs-workout",
+    "name": "Abs Workout",
+    "description": "Targets upper abs, obliques, and core stability — from the manual.",
+    "isStarter": true,
+    "entries": [
+      {"exerciseId": "resisted-crunch", "sets": 2, "reps": 25, "restSec": 45, "targetIncline": 4},
+      {"exerciseId": "sit-up-with-feet-attached", "sets": 1, "reps": 25, "restSec": 45, "targetIncline": 4},
+      {"exerciseId": "trunk-rotation", "sets": 1, "reps": 25, "restSec": 45, "targetIncline": 3},
+      {"exerciseId": "side-plank", "sets": 1, "reps": 25, "restSec": 30, "targetIncline": 2}
+    ]
+  },
+  {
+    "id": "back-workout",
+    "name": "Back Workout",
+    "description": "Lower back, lats and rear deltoids — from the manual.",
+    "isStarter": true,
+    "entries": [
+      {"exerciseId": "hyperextension", "sets": 2, "reps": 15, "restSec": 45, "targetIncline": 3},
+      {"exerciseId": "row", "sets": 4, "reps": 10, "restSec": 60, "targetIncline": 5},
+      {"exerciseId": "back-fly", "sets": 3, "reps": 10, "restSec": 60, "targetIncline": 4},
+      {"exerciseId": "pull-up", "sets": 3, "reps": 10, "restSec": 75, "targetIncline": 6}
+    ]
+  },
+  {
+    "id": "chest-workout",
+    "name": "Chest Workout",
+    "description": "Pecs, front deltoids and triceps — from the manual.",
+    "isStarter": true,
+    "entries": [
+      {"exerciseId": "chest-press", "sets": 3, "reps": 8, "restSec": 60, "targetIncline": 5},
+      {"exerciseId": "incline-chest-fly", "sets": 3, "reps": 8, "restSec": 60, "targetIncline": 5},
+      {"exerciseId": "decline-chest-fly", "sets": 3, "reps": 8, "restSec": 60, "targetIncline": 5},
+      {"exerciseId": "pullover", "sets": 3, "reps": 8, "restSec": 60, "targetIncline": 4}
+    ]
+  },
+  {
+    "id": "legs-workout",
+    "name": "Legs Workout",
+    "description": "Hamstrings, quads, glutes and calves — from the manual.",
+    "isStarter": true,
+    "entries": [
+      {"exerciseId": "leg-curl", "sets": 4, "reps": 12, "restSec": 60, "targetIncline": 4},
+      {"exerciseId": "squat", "sets": 4, "reps": 12, "restSec": 60, "targetIncline": 5},
+      {"exerciseId": "front-lunge", "sets": 4, "reps": 12, "restSec": 60, "targetIncline": 4},
+      {"exerciseId": "calf-raise", "sets": 4, "reps": 12, "restSec": 45, "targetIncline": 3}
+    ]
+  },
+  {
+    "id": "shoulders-workout",
+    "name": "Shoulders Workout",
+    "description": "Front, lateral and rear deltoids plus traps — from the manual.",
+    "isStarter": true,
+    "entries": [
+      {"exerciseId": "shoulder-press", "sets": 3, "reps": 8, "restSec": 60, "targetIncline": 5},
+      {"exerciseId": "upright-row", "sets": 3, "reps": 8, "restSec": 60, "targetIncline": 5},
+      {"exerciseId": "lateral-deltoid-raise", "sets": 3, "reps": 8, "restSec": 45, "targetIncline": 4},
+      {"exerciseId": "front-deltoid-raise", "sets": 3, "reps": 8, "restSec": 45, "targetIncline": 4}
+    ]
+  }
+]

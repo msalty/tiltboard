@@ -1,0 +1,34 @@
+[
+  {
+    "id": "beginner-3x",
+    "name": "Beginner 3×/week",
+    "description": "Full body three times a week — the classic starting point.",
+    "weeklyTargetN": 3,
+    "schedule": {
+      "Mon": "full-body-8",
+      "Tue": null,
+      "Wed": "full-body-8",
+      "Thu": null,
+      "Fri": "full-body-8",
+      "Sat": null,
+      "Sun": null
+    },
+    "isStarter": true
+  },
+  {
+    "id": "intermediate-4x",
+    "name": "Intermediate 4×/week",
+    "description": "Upper / Lower split four days a week for more volume.",
+    "weeklyTargetN": 4,
+    "schedule": {
+      "Mon": "upper-push-pull",
+      "Tue": "lower-and-core",
+      "Wed": null,
+      "Thu": "upper-push-pull",
+      "Fri": "lower-and-core",
+      "Sat": null,
+      "Sun": null
+    },
+    "isStarter": true
+  }
+]
