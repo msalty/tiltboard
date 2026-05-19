@@ -1,13 +1,13 @@
-const CACHE = 'tiltboard-v1';
+const CACHE = 'tiltboard-v1.0.2';
 const SHELL = [
-  '/',
-  '/index.html',
-  '/data/exercises.json',
-  '/data/routines.json',
-  '/data/programs.json',
-  '/manifest.webmanifest',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  './',
+  'index.html',
+  'data/exercises.json',
+  'data/routines.json',
+  'data/programs.json',
+  'manifest.webmanifest',
+  'icons/icon-192.png',
+  'icons/icon-512.png'
 ];
 
 self.addEventListener('install', e => {

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#0f0f0f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -20,7 +20,9 @@ body{height:100%;background:var(--bg);color:var(--fg);font-family:var(--font-bod
   --font-body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --font-head:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --radius:14px;--radius-sm:10px;--radius-xs:6px;
-  --nav-h:60px;--safe-b:env(safe-area-inset-bottom,0px);
+  --nav-h:60px;
+  --safe-t:env(safe-area-inset-top,0px);
+  --safe-b:min(env(safe-area-inset-bottom,0px),34px);
   --transition:180ms ease;
 }
 [data-theme="dark"]{
@@ -61,16 +63,17 @@ body{height:100%;background:var(--bg);color:var(--fg);font-family:var(--font-bod
 }}
 
 /* ===== LAYOUT ===== */
-#app{position:fixed;inset:0;display:flex;flex-direction:column;overflow:hidden}
-#view{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h) + var(--safe-b) + 8px)}
-#nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav-h) + var(--safe-b));padding-bottom:var(--safe-b);background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100}
+html,body{background:var(--bg2);margin:0;padding:0}
+#app{position:fixed;top:0;right:0;bottom:0;left:0;display:flex;flex-direction:column;overflow:hidden;padding-top:var(--safe-t)}
+#view{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h) + 8px)}
+#nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav-h);background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;color:var(--fg3);font-size:10px;cursor:pointer;padding:6px 4px;transition:color var(--transition)}
 .nav-btn.active{color:var(--accent)}
 .nav-btn svg{width:22px;height:22px}
 .nav-btn span{font-size:10px;font-weight:500}
 
 /* ===== HEADER ===== */
-.page-header{padding:16px 16px 8px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);z-index:50;border-bottom:1px solid var(--border)}
+.page-header{padding:16px 16px 8px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:50}
 .page-title{font-size:28px;font-weight:700;font-family:var(--font-head)}
 .hdr-btn{background:var(--bg3);border:none;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--fg2)}
 
@@ -82,6 +85,7 @@ body{height:100%;background:var(--bg);color:var(--fg);font-family:var(--font-bod
 .card-section{background:var(--bg2);border-radius:var(--radius);overflow:hidden;margin-bottom:12px;box-shadow:var(--card-shadow)}
 
 /* ===== BUTTONS ===== */
+button{-webkit-appearance:none;appearance:none}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 20px;border-radius:var(--radius-sm);font-size:16px;font-weight:600;border:none;cursor:pointer;transition:opacity var(--transition),transform var(--transition)}
 .btn:active{opacity:.8;transform:scale(.98)}
 .btn-primary{background:var(--accent);color:var(--accent-fg);width:100%}
@@ -91,7 +95,7 @@ body{height:100%;background:var(--bg);color:var(--fg);font-family:var(--font-bod
 .btn-sm{padding:8px 14px;font-size:14px;border-radius:var(--radius-xs)}
 
 /* ===== INPUTS ===== */
-.search-bar{display:flex;align-items:center;background:var(--bg3);border-radius:var(--radius-sm);padding:10px 14px;gap:8px;margin:0 16px 12px}
+.search-bar{display:flex;align-items:center;background:var(--bg3);border-radius:var(--radius-sm);padding:10px 14px;gap:8px;margin:12px 16px 12px}
 .search-bar input{flex:1;background:none;border:none;color:var(--fg);font-size:16px;outline:none}
 .search-bar input::placeholder{color:var(--fg3)}
 .field{margin-bottom:14px}
@@ -182,6 +186,15 @@ select option{background:var(--bg2)}
 .felt-row{display:flex;gap:8px;justify-content:center;margin:12px 0}
 .felt-btn{flex:1;padding:12px 4px;border-radius:var(--radius-sm);border:2px solid var(--border);background:none;font-size:13px;font-weight:600;cursor:pointer;color:var(--fg2)}
 .felt-btn.active{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
+.checkoff-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border)}
+.checkoff-row:last-child{border-bottom:none}
+.checkoff-done .chk-name{text-decoration:line-through;color:var(--fg2)}
+.check-circle{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--accent);flex-shrink:0;transition:background .15s,border-color .15s}
+.check-circle.checked{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.chk-thumb{width:52px;height:52px;object-fit:contain;border-radius:8px;background:var(--bg3);flex-shrink:0}
+.chk-info{flex:1;min-width:0}
+.chk-name{font-size:15px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chk-meta{font-size:13px;color:var(--fg2)}
 .back-btn{background:none;border:none;color:var(--accent);font-size:16px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:4px;padding:4px 0}
 .detail-gif{width:100%;max-height:280px;object-fit:contain;background:var(--bg3);border-radius:var(--radius) var(--radius) 0 0}
 .cue-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:15px;line-height:1.5;color:var(--fg2)}
@@ -193,22 +206,40 @@ select option{background:var(--bg2)}
 .re-name{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .re-detail{font-size:12px;color:var(--fg2);margin-top:2px}
 .re-del{background:none;border:none;color:var(--red);font-size:18px;cursor:pointer;padding:4px}
-.day-cell{background:var(--bg3);border-radius:var(--radius-xs);padding:10px 12px;cursor:pointer;transition:background var(--transition)}
+.day-cell{flex:0 0 auto;min-width:88px;background:var(--bg3);border-radius:var(--radius-xs);padding:10px 12px;cursor:pointer;transition:background var(--transition)}
 .day-cell:active{background:var(--border)}
 .day-label{font-size:12px;font-weight:700;color:var(--fg2);text-transform:uppercase;margin-bottom:4px}
 .day-routine{font-size:14px;font-weight:600;color:var(--accent)}
 .day-rest{font-size:14px;color:var(--fg3)}
-.week-schedule{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:0 2px}
+.week-schedule{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:0 2px 8px}
+.week-schedule::-webkit-scrollbar{display:none}
 .swipe-hint{text-align:center;font-size:12px;color:var(--fg3);padding:4px 0}
 .log-entry{padding:12px 16px;border-bottom:1px solid var(--border)}
 .log-entry:last-child{border-bottom:none}
 .log-date{font-size:13px;color:var(--fg2)}
 .log-name{font-size:15px;font-weight:600;margin:2px 0}
 .log-detail{font-size:12px;color:var(--fg3)}
+.swipe-row{position:relative;overflow:hidden}
+.swipe-row:not(:last-child){border-bottom:1px solid var(--border)}
+.swipe-del{position:absolute;right:0;top:0;bottom:0;width:80px;background:var(--red);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;font-weight:700;gap:3px;cursor:pointer;user-select:none}
+.swipe-content{position:relative;z-index:1;background:var(--bg2);transition:transform .22s ease;touch-action:pan-y}
+.swipe-content.dragging{transition:none}
+.log-del-btn{display:none;background:none;border:none;color:var(--red);font-size:18px;cursor:pointer;padding:6px 8px;border-radius:var(--radius-xs);opacity:.5;flex-shrink:0;line-height:1}
+.log-del-btn:hover{opacity:1;background:rgba(255,59,48,.1)}
+@media(hover:hover) and (pointer:fine){.log-del-btn{display:block}}
 .feel-emoji{font-size:16px}
+.custom-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle}
+.cue-edit-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+.cue-edit-row .cue-num{margin-top:10px;flex-shrink:0}
+.cue-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-xs);padding:9px 12px;color:var(--fg);font-size:15px;outline:none;font-family:inherit;resize:vertical;min-height:44px}
+.cue-input:focus{border-color:var(--accent)}
+.icon-btn{background:none;border:none;cursor:pointer;padding:6px;border-radius:var(--radius-xs);line-height:1;font-size:16px}
+.exp-check-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.exp-check-row:last-child{border-bottom:none}
+.exp-check-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
 </style>
 </head>
-<body data-theme="dark">
+<body>
 <div id="app">
   <div id="view"><div class="empty-state" style="height:100vh;display:flex;align-items:center;justify-content:center"><div><div style="font-size:40px;margin-bottom:12px">🏋️</div><p>Loading Tiltboard…</p></div></div></div>
   <nav id="nav"></nav>
@@ -226,7 +257,7 @@ let state = {
   theme: 'dark', activeProgram: null,
   filterGroup: 'All', filterPattern: 'All', filterAttach: 'All', filterFav: false,
   searchQ: '',
-  editRoutine: null, editProgram: null,
+  editRoutine: null, editProgram: null, editCustomEx: null,
   workout: null, /* { routineId, mode, entries, current, sets[], durationStart, restTimer } */
   calView: 'month', calDate: new Date(),
   logs: [], settings: {}
@@ -267,9 +298,12 @@ async function init(){
   await openDB();
   // Load exercises
   const r = await fetch('data/exercises.json'); EXERCISES = await r.json();
-  // Load user exercise overrides (favorites etc)
+  // Load user exercise overrides (favorites) and custom exercises
   const userEx = await dbGetAll('userEx');
-  userEx.forEach(u=>{ const ex=EXERCISES.find(e=>e.id===u.id); if(ex) Object.assign(ex,u); });
+  userEx.forEach(u=>{
+    if(u.isCustom){ EXERCISES.push(u); }
+    else{ const ex=EXERCISES.find(e=>e.id===u.id); if(ex) Object.assign(ex,u); }
+  });
   // Load routines (merge starter + user-saved)
   const starterR = await (await fetch('data/routines.json')).json();
   const savedR = await dbGetAll('routines');
@@ -313,8 +347,9 @@ async function saveSettings(patch){
 
 // ─── Streak Logic ────────────────────────────────────
 function getMonday(d){const dt=new Date(d);const day=dt.getDay()||7;dt.setDate(dt.getDate()-day+1);dt.setHours(0,0,0,0);return dt}
-function weekKey(d){return getMonday(d).toISOString().slice(0,10)}
-function todayStr(){return new Date().toISOString().slice(0,10)}
+function dateStr(d){const dt=d||new Date();return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`}
+function weekKey(d){return dateStr(getMonday(d))}
+function todayStr(){return dateStr(new Date())}
 
 function computeStreaks(logs,weeklyTarget){
   if(!weeklyTarget||weeklyTarget<1) weeklyTarget=1;
@@ -334,7 +369,7 @@ function computeStreaks(logs,weeklyTarget){
     else{
       const prevDate=new Date(prev+'T12:00:00');prevDate.setDate(prevDate.getDate()+7);
       const thisDate=new Date(wk+'T12:00:00');
-      if(prevDate.toISOString().slice(0,10)===thisDate.toISOString().slice(0,10)) cur++;
+      if(dateStr(prevDate)===dateStr(thisDate)) cur++;
       else cur=1;
     }
     if(cur>best) best=cur;
@@ -387,6 +422,7 @@ function render(){
     case 'calendar': v.innerHTML=renderCalendar(); bindCalendar(); break;
     case 'library':
       if(state.subview==='detail') {v.innerHTML=renderExDetail(state.subId);bindExDetail();}
+      else if(state.subview==='add-ex'||state.subview==='edit-ex') {v.innerHTML=renderCustomExEditor();bindCustomExEditor();}
       else {v.innerHTML=renderLibrary(); bindLibrary();}
       break;
     case 'routines':
@@ -452,17 +488,19 @@ function renderToday(){
     </div>
   </div>
   <div style="padding:16px">
-    <div class="card" style="display:flex;gap:20px;align-items:center">
-      <div class="streak-ring">
-        <div class="streak-num">${current}</div>
-        <div class="streak-lbl">week streak</div>
+    <div class="card">
+      <div style="display:flex;gap:20px;align-items:center">
+        <div class="streak-ring">
+          <div class="streak-num">${current}</div>
+          <div class="streak-lbl">week streak</div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:18px;font-weight:700;margin-bottom:4px">${thisWk} / ${wt} this week</div>
+          <div style="font-size:13px;color:var(--fg2)">Best: ${best} week${best!==1?'s':''}</div>
+          <div class="progress-bar" style="margin-top:10px"><div class="progress-fill" style="width:${Math.min(100,thisWk/wt*100)}%"></div></div>
+        </div>
       </div>
-      <div style="flex:1">
-        <div style="font-size:18px;font-weight:700;margin-bottom:4px">${thisWk} / ${wt} this week</div>
-        <div style="font-size:13px;color:var(--fg2)">Best: ${best} week${best!==1?'s':''}</div>
-        <div class="progress-bar" style="margin-top:10px"><div class="progress-fill" style="width:${Math.min(100,thisWk/wt*100)}%"></div></div>
-        <div class="week-dots" style="margin-top:12px;justify-content:flex-start">${dotsHtml}</div>
-      </div>
+      <div class="week-dots" style="margin-top:14px;justify-content:space-between">${dotsHtml}</div>
     </div>
     ${routine ? `
     <div class="card">
@@ -489,10 +527,16 @@ function renderToday(){
 function renderLogRow(l){
   const r=ROUTINES.find(r=>r.id===l.routineId);
   const feels=['','😊','💪','😤','🔥','🏆'];
-  return `<div class="log-entry">
-    <div class="log-date">${l.date} · ${l.mode==='guided'?'Guided':'Check-off'} ${l.feltLike?feels[l.feltLike]:''}</div>
-    <div class="log-name">${r?.name||l.routineName||'Workout'}</div>
-    <div class="log-detail">${l.mode==='guided'&&l.sets?.length?l.sets.length+' sets logged':l.durationSec?formatDur(l.durationSec):''}</div>
+  return `<div class="swipe-row" data-logid="${l.id}">
+    <div class="swipe-del" aria-label="Delete workout">🗑<span>Delete</span></div>
+    <div class="swipe-content log-entry" style="display:flex;align-items:center">
+      <div style="flex:1;min-width:0">
+        <div class="log-date">${l.date} · ${l.mode==='guided'?'Guided':'Check-off'} ${l.feltLike?feels[l.feltLike]:''}</div>
+        <div class="log-name">${r?.name||l.routineName||'Workout'}</div>
+        <div class="log-detail">${l.mode==='guided'&&l.sets?.length?l.sets.length+' sets logged':l.durationSec?formatDur(l.durationSec):''}</div>
+      </div>
+      <button class="log-del-btn" data-logid="${l.id}" aria-label="Delete workout">🗑</button>
+    </div>
   </div>`;
 }
 
@@ -503,6 +547,60 @@ function bindToday(){
   document.getElementById('start-guided')?.addEventListener('click',e=>startWorkout(e.target.dataset.rid,'guided'));
   document.getElementById('start-checkoff')?.addEventListener('click',e=>startWorkout(e.target.dataset.rid,'checkoff'));
   document.getElementById('free-checkoff')?.addEventListener('click',()=>showRoutinePicker('checkoff'));
+  bindSwipeRows();
+}
+
+function bindSwipeRows(){
+  document.querySelectorAll('.swipe-row').forEach(row=>{
+    const content=row.querySelector('.swipe-content');
+    const delBtn=row.querySelector('.swipe-del');
+    if(!content||!delBtn) return;
+    const SNAP=80;
+    let startX=0,startY=0,curX=0,tracking=false,open=false;
+
+    content.addEventListener('touchstart',e=>{
+      startX=e.touches[0].clientX; startY=e.touches[0].clientY;
+      curX=open?-SNAP:0; tracking=false;
+      content.classList.add('dragging');
+    },{passive:true});
+
+    content.addEventListener('touchmove',e=>{
+      const dx=e.touches[0].clientX-startX;
+      const dy=e.touches[0].clientY-startY;
+      if(!tracking){
+        if(Math.abs(dy)>Math.abs(dx)) return; // let vertical scroll win
+        tracking=true;
+      }
+      curX=Math.max(-SNAP-10, Math.min(0, (open?-SNAP:0)+dx));
+      content.style.transform=`translateX(${curX}px)`;
+    },{passive:true});
+
+    content.addEventListener('touchend',()=>{
+      content.classList.remove('dragging');
+      if(curX<-(SNAP/2)){
+        open=true; content.style.transform=`translateX(-${SNAP}px)`;
+      } else {
+        open=false; content.style.transform='';
+      }
+    });
+
+    // Tap elsewhere to close any open row
+    content.addEventListener('click',()=>{ if(open){open=false;content.style.transform='';} });
+
+    delBtn.addEventListener('click',()=>deleteLog(row.dataset.logid));
+
+    // Mouse-device inline delete button (only rendered on hover:hover devices)
+    row.querySelector('.log-del-btn')?.addEventListener('click',e=>{
+      e.stopPropagation();deleteLog(row.dataset.logid);
+    });
+  });
+}
+
+async function deleteLog(rawId){
+  const id=isNaN(rawId)?rawId:parseInt(rawId);
+  await dbDelete('logs',id);
+  state.logs=state.logs.filter(l=>l.id!=id);
+  render();
 }
 
 // ─── CALENDAR ────────────────────────────────────────
@@ -529,7 +627,7 @@ function renderHeatmap(){
   const cells=[];
   const d=new Date(start);
   while(d<=today){
-    const ds=d.toISOString().slice(0,10);
+    const ds=dateStr(d);
     const count=state.logs.filter(l=>l.date===ds).length;
     const lvl=count===0?'':count===1?'l1':count===2?'l2':count===3?'l3':'l4';
     cells.push(`<div class="hm-cell ${lvl}" title="${ds}${count?' ('+count+')'  :''}"></div>`);
@@ -614,9 +712,9 @@ function renderLibrary(){
   const patChips=PATTERNS.map(p=>`<button class="chip ${state.filterPattern===p?'active':''}" data-pat="${p}">${p==='All'?'All Patterns':p}</button>`).join('');
   const rows=exs.map(e=>`
     <div class="ex-row" data-exid="${e.id}">
-      <img class="ex-gif" src="${e.gifFile}" alt="${e.name}" loading="lazy">
+      ${e.gifFile?`<img class="ex-gif" src="${e.gifFile}" alt="${e.name}" loading="lazy">`:`<div class="ex-gif" style="background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🏋️</div>`}
       <div class="ex-info">
-        <div class="ex-name">${e.name}</div>
+        <div class="ex-name">${e.name}${e.isCustom?'<span class="custom-badge">custom</span>':''}</div>
         <div class="ex-meta">${e.muscleGroup} · ${e.movementPattern}</div>
       </div>
       <button class="ex-fav ${e.favorite?'on':''}" data-fav="${e.id}" aria-label="Favorite">★</button>
@@ -624,7 +722,12 @@ function renderLibrary(){
   return `
   <div class="page-header">
     <div class="page-title">Library</div>
-    <button class="chip ${state.filterFav?'active':''}" id="fav-toggle" style="padding:6px 14px">★ Faves</button>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="chip ${state.filterFav?'active':''}" id="fav-toggle" style="padding:6px 14px">★ Faves</button>
+      <button class="hdr-btn" id="new-exercise" aria-label="Add exercise">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </div>
   </div>
   <div class="search-bar">
     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -638,6 +741,10 @@ function renderLibrary(){
 function bindLibrary(){
   document.getElementById('lib-search')?.addEventListener('input',e=>{state.searchQ=e.target.value;render()});
   document.getElementById('fav-toggle')?.addEventListener('click',()=>{state.filterFav=!state.filterFav;render()});
+  document.getElementById('new-exercise')?.addEventListener('click',()=>{
+    state.editCustomEx={id:'',name:'',muscleGroup:'Chest',movementPattern:'push',attachment:'none',gifFile:null,formCues:[''],favorite:false};
+    nav('library','add-ex');
+  });
   document.querySelectorAll('[data-grp]').forEach(el=>el.addEventListener('click',()=>{state.filterGroup=el.dataset.grp;render()}));
   document.querySelectorAll('[data-pat]').forEach(el=>el.addEventListener('click',()=>{state.filterPattern=el.dataset.pat;render()}));
   document.querySelectorAll('[data-fav]').forEach(el=>el.addEventListener('click',async e=>{
@@ -651,21 +758,25 @@ function bindLibrary(){
 function renderExDetail(id){
   const ex=EXERCISES.find(e=>e.id===id);
   if(!ex) return '<div class="empty-state"><p>Exercise not found.</p></div>';
-  const cues=ex.formCues.map((c,i)=>`<div class="cue-item"><div class="cue-num">${i+1}</div><div>${c}</div></div>`).join('');
+  const cues=ex.formCues?.length?ex.formCues.map((c,i)=>`<div class="cue-item"><div class="cue-num">${i+1}</div><div>${c}</div></div>`).join(''):'<div style="color:var(--fg3);font-size:14px;padding:8px 0">No form cues added.</div>';
+  const gifHtml=ex.gifFile
+    ?`<div style="background:var(--bg3);border-radius:var(--radius) var(--radius) 0 0;overflow:hidden"><img src="${ex.gifFile}" class="detail-gif" alt="${ex.name}" loading="lazy"></div>`
+    :`<div style="height:120px;background:var(--bg3);border-radius:var(--radius) var(--radius) 0 0;display:flex;align-items:center;justify-content:center;font-size:48px">🏋️</div>`;
   return `
-  <div style="background:var(--bg3);border-radius:var(--radius) var(--radius) 0 0;overflow:hidden">
-    <img src="${ex.gifFile}" class="detail-gif" alt="${ex.name}" loading="lazy">
-  </div>
+  ${gifHtml}
   <div style="padding:16px">
-    <button class="back-btn" id="ex-back">← Library</button>
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <button class="back-btn" id="ex-back">← Library</button>
+      ${ex.isCustom?`<button class="back-btn" id="ex-edit-btn" style="color:var(--accent)">Edit ✎</button>`:''}
+    </div>
     <div style="margin-top:8px;display:flex;align-items:flex-start;justify-content:space-between">
-      <div style="font-size:24px;font-weight:800;font-family:var(--font-head);flex:1">${ex.name}</div>
+      <div style="font-size:24px;font-weight:800;font-family:var(--font-head);flex:1">${ex.name}${ex.isCustom?'<span class="custom-badge">custom</span>':''}</div>
       <button class="ex-fav ${ex.favorite?'on':''}" data-fav="${ex.id}" style="font-size:24px">★</button>
     </div>
     <div style="margin:8px 0 16px">
       <span class="tag">${ex.muscleGroup}</span>
       <span class="tag">${ex.movementPattern}</span>
-      ${ex.attachment!=='none'?`<span class="tag">${ex.attachment}</span>`:''}
+      ${ex.attachment&&ex.attachment!=='none'?`<span class="tag">${ex.attachment}</span>`:''}
     </div>
     <div style="font-size:17px;font-weight:700;margin-bottom:10px;font-family:var(--font-head)">Form Cues</div>
     <div class="card-section">${cues}</div>
@@ -674,11 +785,189 @@ function renderExDetail(id){
 
 function bindExDetail(){
   document.getElementById('ex-back')?.addEventListener('click',()=>nav('library'));
+  document.getElementById('ex-edit-btn')?.addEventListener('click',()=>{
+    const ex=EXERCISES.find(e=>e.id===state.subId);
+    if(!ex) return;
+    state.editCustomEx=JSON.parse(JSON.stringify(ex));
+    nav('library','edit-ex',ex.id);
+  });
   document.querySelectorAll('[data-fav]').forEach(el=>el.addEventListener('click',async e=>{
     const ex=EXERCISES.find(x=>x.id===el.dataset.fav);
     if(ex){ex.favorite=!ex.favorite;await dbPut('userEx',{id:ex.id,favorite:ex.favorite});
     el.classList.toggle('on',ex.favorite);}
   }));
+}
+
+// ─── CUSTOM EXERCISE EDITOR ──────────────────────────
+function renderCustomExEditor(){
+  const ex=state.editCustomEx||{id:'',name:'',muscleGroup:'Chest',movementPattern:'push',attachment:'none',gifFile:null,formCues:[''],favorite:false};
+  const isNew=!ex.id;
+  const groups=GROUPS.filter(g=>g!=='All');
+  const patterns=PATTERNS.filter(p=>p!=='All');
+  const attaches=ATTACHES.filter(a=>a!=='All');
+  const cueRows=(ex.formCues||['']).map((c,i)=>`
+    <div class="cue-edit-row">
+      <div class="cue-num">${i+1}</div>
+      <textarea class="cue-input" data-cue="${i}" rows="2" placeholder="Step ${i+1}…">${c}</textarea>
+      <button class="icon-btn" data-cue-del="${i}" style="color:var(--red);margin-top:6px">✕</button>
+    </div>`).join('');
+  const imgPreview=ex.gifFile
+    ?`<img src="${ex.gifFile}" id="cex-img-preview" style="width:80px;height:80px;object-fit:contain;border-radius:var(--radius);background:var(--bg3)">`
+    :`<div id="cex-img-preview" style="width:80px;height:80px;border-radius:var(--radius);background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--fg3);font-size:28px">🖼️</div>`;
+  return `
+  <div class="page-header">
+    <button class="back-btn" id="cex-back">← Library</button>
+    <div class="page-title" style="font-size:18px">${isNew?'New Exercise':'Edit Exercise'}</div>
+    <button class="hdr-btn" id="cex-save" style="font-size:13px;font-weight:700;padding:6px 10px;width:auto">Save</button>
+  </div>
+  <div style="padding:0 16px 40px">
+    <div class="field"><label>Name</label><input id="cex-name" type="text" value="${ex.name}" placeholder="Exercise name…"></div>
+
+    <p class="section-title" style="margin-bottom:8px">Image / GIF <span style="font-weight:400;text-transform:none;color:var(--fg3)">(optional)</span></p>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+      ${imgPreview}
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <button class="btn btn-secondary" id="cex-img-pick" style="padding:8px 16px">Choose Image</button>
+        ${ex.gifFile?`<button class="btn" id="cex-img-clear" style="background:none;color:var(--red);padding:4px 0;font-size:13px;text-align:left">Remove image</button>`:''}
+      </div>
+    </div>
+    <input type="file" id="cex-img-file" accept="image/*" style="display:none">
+
+    <p class="section-title" style="margin-bottom:8px">Muscle Group</p>
+    <div class="chip-row" id="cex-group-chips" style="margin-bottom:16px">
+      ${groups.map(g=>`<button class="chip ${ex.muscleGroup===g?'active':''}" data-cex-grp="${g}">${g}</button>`).join('')}
+    </div>
+
+    <p class="section-title" style="margin-bottom:8px">Movement Pattern</p>
+    <div class="chip-row" id="cex-pat-chips" style="margin-bottom:16px">
+      ${patterns.map(p=>`<button class="chip ${ex.movementPattern===p?'active':''}" data-cex-pat="${p}">${p}</button>`).join('')}
+    </div>
+
+    <p class="section-title" style="margin-bottom:8px">Attachment</p>
+    <div class="chip-row" id="cex-att-chips" style="margin-bottom:16px">
+      ${attaches.map(a=>`<button class="chip ${ex.attachment===a?'active':''}" data-cex-att="${a}">${a}</button>`).join('')}
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <p class="section-title" style="margin:0">Form Cues</p>
+      <button class="btn btn-secondary" id="cex-add-cue" style="padding:5px 12px;font-size:13px">+ Add Step</button>
+    </div>
+    <div id="cex-cues">${cueRows}</div>
+
+    <p class="section-title" style="margin-top:16px;margin-bottom:8px">Options</p>
+    <div class="card-section">
+      <div class="card-row" id="cex-fav-row" style="cursor:pointer;-webkit-tap-highlight-color:transparent">
+        <div style="flex:1;font-size:15px">Mark as Favorite</div>
+        <span id="cex-fav-icon" style="font-size:22px;color:var(--accent)">${ex.favorite?'★':'☆'}</span>
+      </div>
+    </div>
+
+    ${!isNew?`<div style="margin-top:24px"><button class="btn btn-danger" id="cex-delete" style="width:100%">Delete Exercise</button></div>`:''}
+  </div>`;
+}
+
+function syncCustomExCues(){
+  const ex=state.editCustomEx;
+  if(!ex) return;
+  document.querySelectorAll('[data-cue]').forEach(el=>{
+    const i=parseInt(el.dataset.cue);
+    if(ex.formCues) ex.formCues[i]=el.value;
+  });
+}
+
+function bindCustomExEditor(){
+  const ex=state.editCustomEx;
+  if(!ex) return;
+
+  document.getElementById('cex-back')?.addEventListener('click',()=>{state.editCustomEx=null;nav('library');});
+
+  // Tag chips — targeted class toggles, no re-render
+  document.querySelectorAll('[data-cex-grp]').forEach(el=>el.addEventListener('click',()=>{
+    ex.muscleGroup=el.dataset.cexGrp;
+    document.querySelectorAll('[data-cex-grp]').forEach(b=>b.classList.toggle('active',b===el));
+  }));
+  document.querySelectorAll('[data-cex-pat]').forEach(el=>el.addEventListener('click',()=>{
+    ex.movementPattern=el.dataset.cexPat;
+    document.querySelectorAll('[data-cex-pat]').forEach(b=>b.classList.toggle('active',b===el));
+  }));
+  document.querySelectorAll('[data-cex-att]').forEach(el=>el.addEventListener('click',()=>{
+    ex.attachment=el.dataset.cexAtt;
+    document.querySelectorAll('[data-cex-att]').forEach(b=>b.classList.toggle('active',b===el));
+  }));
+
+  // Image picker
+  document.getElementById('cex-img-pick')?.addEventListener('click',()=>document.getElementById('cex-img-file')?.click());
+  document.getElementById('cex-img-file')?.addEventListener('change',e=>{
+    const file=e.target.files[0]; if(!file) return;
+    const reader=new FileReader();
+    reader.onload=re=>{
+      ex.gifFile=re.target.result;
+      const prev=document.getElementById('cex-img-preview');
+      if(prev){
+        const img=document.createElement('img');
+        img.id='cex-img-preview';img.src=ex.gifFile;
+        img.style.cssText='width:80px;height:80px;object-fit:contain;border-radius:var(--radius);background:var(--bg3)';
+        prev.replaceWith(img);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+  document.getElementById('cex-img-clear')?.addEventListener('click',()=>{ex.gifFile=null;render();});
+
+  // Form cue delete
+  document.querySelectorAll('[data-cue-del]').forEach(el=>el.addEventListener('click',()=>{
+    syncCustomExCues();
+    const i=parseInt(el.dataset.cueDel);
+    ex.formCues.splice(i,1);
+    if(!ex.formCues.length) ex.formCues=[''];
+    render();
+  }));
+
+  // Add cue
+  document.getElementById('cex-add-cue')?.addEventListener('click',()=>{
+    syncCustomExCues();
+    ex.formCues.push('');
+    render();
+    setTimeout(()=>{const inputs=document.querySelectorAll('[data-cue]');inputs[inputs.length-1]?.focus();},50);
+  });
+
+  // Favorite toggle
+  document.getElementById('cex-fav-row')?.addEventListener('click',()=>{
+    ex.favorite=!ex.favorite;
+    const icon=document.getElementById('cex-fav-icon');
+    if(icon) icon.textContent=ex.favorite?'★':'☆';
+  });
+
+  // Save
+  document.getElementById('cex-save')?.addEventListener('click',async()=>{
+    syncCustomExCues();
+    const name=(document.getElementById('cex-name')?.value||'').trim();
+    if(!name){showToast('Please enter a name');return;}
+    ex.name=name;
+    ex.formCues=(ex.formCues||[]).filter(c=>c.trim());
+    const isNew=!ex.id;
+    if(isNew) ex.id='custom-'+Date.now();
+    ex.isCustom=true;
+    await dbPut('userEx',ex);
+    if(isNew){ EXERCISES.push(ex); }
+    else{ const idx=EXERCISES.findIndex(e=>e.id===ex.id); if(idx>=0) EXERCISES[idx]=ex; }
+    state.editCustomEx=null;
+    showToast(isNew?'Exercise added!':'Exercise saved!');
+    nav('library');
+  });
+
+  // Delete
+  document.getElementById('cex-delete')?.addEventListener('click',()=>{
+    showConfirm('Delete exercise?',`"${ex.name}" will be permanently deleted.`,async()=>{
+      await dbDelete('userEx',ex.id);
+      const idx=EXERCISES.findIndex(e=>e.id===ex.id);
+      if(idx>=0) EXERCISES.splice(idx,1);
+      ROUTINES.forEach(r=>{r.entries=(r.entries||[]).filter(e=>e.exerciseId!==ex.id);});
+      state.editCustomEx=null;
+      showToast('Exercise deleted');
+      nav('library');
+    });
+  });
 }
 
 // ─── ROUTINES ────────────────────────────────────────
@@ -749,7 +1038,7 @@ function renderRoutineEditor(){
 function bindRoutineEditor(){
   document.getElementById('routine-back')?.addEventListener('click',()=>nav('routines'));
   document.querySelectorAll('.re-del').forEach(el=>el.addEventListener('click',e=>{
-    state.editRoutine.entries.splice(parseInt(el.dataset.idx),1);render();
+    syncRoutineForm();state.editRoutine.entries.splice(parseInt(el.dataset.idx),1);render();
   }));
   document.getElementById('add-ex-btn')?.addEventListener('click',()=>showExercisePicker());
   document.getElementById('delete-routine')?.addEventListener('click',()=>deleteRoutine());
@@ -780,34 +1069,61 @@ async function deleteRoutine(){
   });
 }
 
-function showExercisePicker(onPick){
-  let filteredExs=EXERCISES;
+function showExercisePicker(){
   let searchVal='';
   let groupFilter='All';
-  const render=()=>{
-    filteredExs=EXERCISES
+
+  function getFiltered(){
+    return EXERCISES
       .filter(e=>!searchVal||e.name.toLowerCase().includes(searchVal.toLowerCase()))
       .filter(e=>groupFilter==='All'||e.muscleGroup===groupFilter);
-    const groupChips=GROUPS.map(g=>`<button class="chip ${groupFilter===g?'active':''}" onclick="(()=>{groupFilter='${g}';render()})()";>${g}</button>`).join('');
-    const exRows=filteredExs.map(e=>`
-      <div class="ex-row picker-ex" data-exid="${e.id}" style="cursor:pointer">
+  }
+
+  function updateList(){
+    const list=document.getElementById('picker-ex-list');
+    if(!list) return;
+    const rows=getFiltered().map(e=>`
+      <div class="ex-row picker-ex" data-exid="${e.id}">
         <img class="ex-gif" src="${e.gifFile}" style="width:40px;height:40px" alt="">
         <div class="ex-info"><div class="ex-name">${e.name}</div><div class="ex-meta">${e.muscleGroup}</div></div>
       </div>`).join('');
-    const content=`
-      <div class="search-bar" style="margin:0 0 12px"><input id="picker-search" type="search" placeholder="Search…" value="${searchVal}" autocomplete="off"></div>
-      <div class="chip-row" style="margin:0 0 8px">${groupChips}</div>
-      <div class="card-section" style="max-height:50vh;overflow-y:auto">${exRows}</div>`;
-    const sheet=document.getElementById('picker-sheet');
-    if(sheet) sheet.innerHTML=`<div class="modal-title">Add Exercise</div>${content}`;
-    document.getElementById('picker-search')?.addEventListener('input',e=>{searchVal=e.target.value;render();});
-    document.querySelectorAll('.picker-ex').forEach(el=>el.addEventListener('click',()=>{
-      const exId=el.dataset.exid;
-      showExEntryModal(exId);
-      closeModal();
+    list.innerHTML=rows||'<div style="padding:16px;text-align:center;color:var(--fg3)">No exercises match.</div>';
+    list.querySelectorAll('.picker-ex').forEach(el=>el.addEventListener('click',()=>{
+      showExEntryModal(el.dataset.exid); // showModal inside already closes the picker
     }));
-  };
-  showModal2(render,'picker-sheet');
+  }
+
+  function updateChips(){
+    const chips=document.getElementById('picker-chips');
+    if(!chips) return;
+    chips.innerHTML=GROUPS.map(g=>`<button class="chip ${groupFilter===g?'active':''}" data-grp="${g}">${g}</button>`).join('');
+    chips.querySelectorAll('[data-grp]').forEach(el=>el.addEventListener('click',()=>{
+      groupFilter=el.dataset.grp; updateChips(); updateList();
+    }));
+  }
+
+  // Build modal once — search input is never replaced, so focus is never lost
+  closeModal();
+  const backdrop=document.createElement('div');
+  backdrop.className='modal-backdrop'; backdrop.id='modal-backdrop';
+  backdrop.innerHTML=`<div class="modal-sheet">
+    <div class="modal-title">Add Exercise</div>
+    <div class="search-bar" style="margin:0 0 12px">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="picker-search" type="search" placeholder="Search…" autocomplete="off">
+    </div>
+    <div class="chip-row" id="picker-chips" style="margin:0 0 8px;padding:0"></div>
+    <div class="card-section" id="picker-ex-list" style="height:45vh;overflow-y:auto"></div>
+  </div>`;
+  backdrop.addEventListener('click',e=>{if(e.target===backdrop)closeModal();});
+  document.body.appendChild(backdrop);
+
+  document.getElementById('picker-search').addEventListener('input',e=>{
+    searchVal=e.target.value; updateList();
+  });
+
+  updateChips();
+  updateList();
 }
 
 function showExEntryModal(exId){
@@ -837,7 +1153,7 @@ function showExEntryModal(exId){
       };
       state.editRoutine.entries.push(entry);
       closeModal();
-      render();
+      syncRoutineForm();render();
     });
   },50);
 }
@@ -914,9 +1230,9 @@ function bindProgramEditor(){
   document.getElementById('prog-back')?.addEventListener('click',()=>nav('programs'));
   document.getElementById('prog-save')?.addEventListener('click',()=>saveProgram());
   document.getElementById('delete-prog')?.addEventListener('click',()=>deleteProgram());
-  document.getElementById('set-active-btn')?.addEventListener('click',async()=>{
+  document.getElementById('set-active-btn')?.addEventListener('click',()=>{
     const p=state.editProgram;if(!p.id){showToast('Save the program first');return;}
-    state.activeProgram=p.id;await saveSettings({activeProgram:p.id});showToast('Program activated!');render();
+    syncProgramForm();state.activeProgram=p.id;render();showToast('Program activated!');saveSettings({activeProgram:p.id});
   });
   document.querySelectorAll('.day-cell').forEach(el=>el.addEventListener('click',()=>{
     const day=el.dataset.day;
@@ -924,7 +1240,25 @@ function bindProgramEditor(){
   }));
 }
 
+function syncRoutineForm(){
+  const name=document.getElementById('r-name')?.value;
+  const desc=document.getElementById('r-desc')?.value;
+  if(name!=null) state.editRoutine.name=name;
+  if(desc!=null) state.editRoutine.description=desc;
+}
+
+function syncProgramForm(){
+  // Flush whatever the user has typed into the form back to state before any re-render
+  const name=document.getElementById('p-name')?.value;
+  const desc=document.getElementById('p-desc')?.value;
+  const target=parseInt(document.getElementById('p-target')?.value);
+  if(name!=null) state.editProgram.name=name;
+  if(desc!=null) state.editProgram.description=desc;
+  if(target) state.editProgram.weeklyTargetN=target;
+}
+
 function showDayPicker(day){
+  syncProgramForm(); // capture any unsaved text before the modal opens
   const current=state.editProgram.schedule[day];
   const options=`<div class="card-row" data-routine-pick="" style="color:var(--fg3)"><div style="flex:1">Rest (no workout)</div>${!current?'<span style="color:var(--green)">✓</span>':''}</div>`+
     ROUTINES.map(r=>`<div class="card-row" data-routine-pick="${r.id}"><div style="flex:1">${r.name}</div>${current===r.id?'<span style="color:var(--green)">✓</span>':''}</div>`).join('');
@@ -1004,25 +1338,53 @@ function renderSettings(){
 
 function bindSettings(){
   document.getElementById('settings-back')?.addEventListener('click',()=>nav('today'));
-  document.querySelectorAll('[data-theme-pick]').forEach(el=>el.addEventListener('click',async()=>{
-    state.theme=el.dataset.themePick;applyTheme(state.theme);await saveSettings({theme:state.theme});render();
+  document.querySelectorAll('[data-theme-pick]').forEach(el=>el.addEventListener('click',()=>{
+    state.theme=el.dataset.themePick;applyTheme(state.theme);render();saveSettings({theme:state.theme});
   }));
-  document.getElementById('export-btn')?.addEventListener('click',exportData);
+  document.getElementById('export-btn')?.addEventListener('click',showExportModal);
   document.getElementById('import-btn')?.addEventListener('click',()=>document.getElementById('import-file').click());
   document.getElementById('import-file')?.addEventListener('change',e=>importData(e.target.files[0]));
   document.getElementById('reset-btn')?.addEventListener('click',()=>showConfirm('Reset all data?','This will delete all your logs, custom routines, and programs. This cannot be undone.',resetAll));
 }
 
 // ─── EXPORT / IMPORT ─────────────────────────────────
-async function exportData(){
-  const customRoutines=ROUTINES.filter(r=>!r.isStarter);
-  const customPrograms=PROGRAMS.filter(p=>!p.isStarter);
-  const userExOverrides=await dbGetAll('userEx');
-  const data={
-    schema:1,version:'1.0',exportedAt:new Date().toISOString(),
-    logs:state.logs,routines:customRoutines,programs:customPrograms,
-    settings:state.settings,userExerciseOverrides:userExOverrides
-  };
+function showExportModal(){
+  showModal('Export Backup',`
+    <p style="color:var(--fg2);font-size:14px;margin-bottom:12px">Choose what to include in the backup file:</p>
+    <div class="card-section" style="margin-bottom:16px">
+      <label class="exp-check-row"><input type="checkbox" id="exp-logs" checked><span style="font-size:15px">Workout History</span></label>
+      <label class="exp-check-row"><input type="checkbox" id="exp-custom" checked><span style="font-size:15px">Custom Exercises</span></label>
+      <label class="exp-check-row"><input type="checkbox" id="exp-routines" checked><span style="font-size:15px">Routines</span></label>
+      <label class="exp-check-row"><input type="checkbox" id="exp-programs" checked><span style="font-size:15px">Programs</span></label>
+    </div>
+    <p style="font-size:12px;color:var(--fg3);margin-bottom:14px">Tip: share just Routines or Custom Exercises with friends — they can import without overwriting their own data.</p>
+    <button class="btn btn-primary" id="exp-go">↓ Download Backup</button>
+  `);
+  setTimeout(()=>{
+    document.getElementById('exp-go')?.addEventListener('click',async()=>{
+      const opts={
+        incLogs:!!document.getElementById('exp-logs')?.checked,
+        incCustom:!!document.getElementById('exp-custom')?.checked,
+        incRoutines:!!document.getElementById('exp-routines')?.checked,
+        incPrograms:!!document.getElementById('exp-programs')?.checked
+      };
+      closeModal();
+      await doExport(opts);
+    });
+  },50);
+}
+
+async function doExport({incLogs=true,incCustom=true,incRoutines=true,incPrograms=true}={}){
+  const allUserEx=await dbGetAll('userEx');
+  const customEx=allUserEx.filter(u=>u.isCustom);
+  const favOverrides=allUserEx.filter(u=>!u.isCustom);
+  const data={schema:2,version:'1.0',exportedAt:new Date().toISOString()};
+  if(incLogs) data.logs=state.logs;
+  if(incCustom) data.customExercises=customEx;
+  if(incRoutines) data.routines=ROUTINES.filter(r=>!r.isStarter);
+  if(incPrograms) data.programs=PROGRAMS.filter(p=>!p.isStarter);
+  data.userExerciseOverrides=favOverrides;
+  data.settings=state.settings;
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
@@ -1037,18 +1399,30 @@ async function importData(file){
     const text=await file.text();
     const data=JSON.parse(text);
     if(!data.schema||data.schema<1) throw new Error('Invalid backup file');
-    const msg=`Import ${data.logs?.length||0} logs, ${data.routines?.length||0} routines, ${data.programs?.length||0} programs from ${data.exportedAt?.slice(0,10)||'?'}?`;
+    const parts=[];
+    if(data.logs?.length) parts.push(`${data.logs.length} logs`);
+    if(data.customExercises?.length) parts.push(`${data.customExercises.length} custom exercises`);
+    if(data.routines?.length) parts.push(`${data.routines.length} routines`);
+    if(data.programs?.length) parts.push(`${data.programs.length} programs`);
+    const msg=`Import ${parts.join(', ')||'data'} from ${data.exportedAt?.slice(0,10)||'?'}? Existing matching items will be replaced.`;
     showConfirm('Import Backup?',msg,async()=>{
-      // Clear
-      for(const l of state.logs) if(l.id) await dbDelete('logs',l.id);
-      const savedR=await dbGetAll('routines'); for(const r of savedR) await dbDelete('routines',r.id);
-      const savedP=await dbGetAll('programs'); for(const p of savedP) await dbDelete('programs',p.id);
+      // Clear existing user data (only what's present in the file)
+      if(data.logs){for(const l of state.logs) if(l.id) await dbDelete('logs',l.id);state.logs=[];}
+      if(data.routines){const savedR=await dbGetAll('routines');for(const r of savedR) await dbDelete('routines',r.id);}
+      if(data.programs){const savedP=await dbGetAll('programs');for(const p of savedP) await dbDelete('programs',p.id);}
       // Write
-      state.logs=[];
       for(const l of (data.logs||[])){const r=await dbPut('logs',l);if(!l.id){l.id=r;}state.logs.push(l);}
       for(const r of (data.routines||[])){await dbPut('routines',r);ROUTINES=ROUTINES.filter(x=>x.id!==r.id);ROUTINES.push(r);}
       for(const p of (data.programs||[])){await dbPut('programs',p);PROGRAMS=PROGRAMS.filter(x=>x.id!==p.id);PROGRAMS.push(p);}
-      for(const u of (data.userExerciseOverrides||[])){await dbPut('userEx',u);const ex=EXERCISES.find(e=>e.id===u.id);if(ex)Object.assign(ex,u);}
+      for(const ce of (data.customExercises||[])){
+        await dbPut('userEx',ce);
+        const idx=EXERCISES.findIndex(e=>e.id===ce.id);
+        if(idx>=0) EXERCISES[idx]=ce; else EXERCISES.push(ce);
+      }
+      for(const u of (data.userExerciseOverrides||[])){
+        if(u.isCustom){const idx=EXERCISES.findIndex(e=>e.id===u.id);if(idx>=0) EXERCISES[idx]=u;else EXERCISES.push(u);}
+        else{await dbPut('userEx',u);const ex=EXERCISES.find(e=>e.id===u.id);if(ex)Object.assign(ex,u);}
+      }
       if(data.settings){await saveSettings(data.settings);}
       showToast('Import complete!');nav('today');
     });
@@ -1063,7 +1437,9 @@ async function resetAll(){
   state.logs=[];
   ROUTINES=await (await fetch('data/routines.json')).json();
   PROGRAMS=await (await fetch('data/programs.json')).json();
-  EXERCISES.forEach(e=>{e.favorite=false;});
+  // Remove custom exercises from memory and reset favorites
+  const baseEx=await (await fetch('data/exercises.json')).json();
+  EXERCISES.length=0; baseEx.forEach(e=>EXERCISES.push(e));
   state.activeProgram=PROGRAMS[0]?.id||null;
   await dbPut('settings',{id:'main',theme:state.theme,activeProgram:state.activeProgram});
   showToast('All data reset!');nav('today');
@@ -1073,42 +1449,14 @@ async function resetAll(){
 function startWorkout(routineId,mode){
   const r=ROUTINES.find(r=>r.id===routineId);
   if(!r) return;
-  if(mode==='checkoff'){
-    showCheckoffModal(r);return;
-  }
   state.workout={
     routineId,routineName:r.name,mode,
     entries:r.entries.map(e=>({...e,sets:[]})),
-    current:0,currentSet:0,durationStart:Date.now(),
-    restTimer:null,restEnd:null
+    checked:Array(r.entries.length).fill(false),
+    current:0,durationStart:Date.now(),
+    restTimer:null,restEnd:null,feltLike:2
   };
   nav('workout');
-}
-
-function showCheckoffModal(routine){
-  const feels=[['😊','Easy'],['💪','Medium'],['😤','Hard'],['🔥','Intense'],['🏆','PR Day!']];
-  let feltLike=2;
-  const content=`
-    <img src="${routine.entries[0]?EXERCISES.find(e=>e.id===routine.entries[0].exerciseId)?.gifFile||'':''}" style="width:100%;max-height:180px;object-fit:contain;border-radius:var(--radius-sm);background:var(--bg3);margin-bottom:16px">
-    <div style="font-size:18px;font-weight:700;margin-bottom:4px">${routine.name}</div>
-    <div style="font-size:14px;color:var(--fg2);margin-bottom:16px">${routine.entries.length} exercises</div>
-    <div style="font-size:14px;font-weight:600;margin-bottom:8px;color:var(--fg2)">How did it feel?</div>
-    <div class="felt-row">${feels.map(([e,l],i)=>`<button class="felt-btn ${i===1?'active':''}" data-felt="${i+1}">${e}<br><small>${l}</small></button>`).join('')}</div>
-    <button class="btn btn-primary" id="confirm-checkoff" style="margin-top:16px">✓ Mark Complete</button>`;
-  showModal('Quick Check-Off',content);
-  setTimeout(()=>{
-    document.querySelectorAll('[data-felt]').forEach(el=>{
-      el.addEventListener('click',()=>{
-        feltLike=parseInt(el.dataset.felt);
-        document.querySelectorAll('[data-felt]').forEach(b=>b.classList.toggle('active',b===el));
-      });
-    });
-    document.getElementById('confirm-checkoff')?.addEventListener('click',async()=>{
-      const log={date:todayStr(),routineId:routine.id,routineName:routine.name,mode:'checkoff',sets:[],durationSec:0,feltLike};
-      const id=await dbPut('logs',log);log.id=id;
-      state.logs.push(log);closeModal();showToast('Workout logged! 🎉');nav('today');
-    });
-  },50);
 }
 
 function showRoutinePicker(mode){
@@ -1124,113 +1472,131 @@ function showRoutinePicker(mode){
 function renderWorkoutView(){
   const w=state.workout;
   if(!w) return '';
+
+  // ── CHECKOFF mode: scrollable checklist of all exercises ──
+  if(w.mode==='checkoff'){
+    const feels=[['😊','Easy'],['💪','Medium'],['😤','Hard'],['🔥','Intense'],['🏆','PR Day!']];
+    const exRows=w.entries.map((entry,i)=>{
+      const ex=EXERCISES.find(e=>e.id===entry.exerciseId);
+      if(!ex) return '';
+      const done=!!(w.checked?.[i]);
+      return `<div class="checkoff-row${done?' checkoff-done':''}" data-chk-row="${i}">
+        <button class="check-circle${done?' checked':''}" data-chk-btn="${i}">${done?'✓':''}</button>
+        <img src="${ex.gifFile}" class="chk-thumb" alt="${ex.name}">
+        <div class="chk-info">
+          <div class="chk-name">${ex.name}</div>
+          <div class="chk-meta">${entry.sets} sets × ${entry.reps} reps · incline ${entry.targetIncline}</div>
+        </div>
+      </div>`;
+    }).join('');
+    return `<div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+      <div style="padding:16px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:18px;font-weight:800;font-family:var(--font-head)">${w.routineName}</div>
+        <button class="back-btn" id="quit-workout" style="color:var(--red)">Quit</button>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:12px 16px">
+        <div class="card-section">${exRows}</div>
+      </div>
+      <div style="padding:16px;border-top:1px solid var(--border);flex-shrink:0">
+        <div style="font-size:13px;font-weight:600;color:var(--fg2);margin-bottom:8px">How did it feel?</div>
+        <div class="felt-row" style="margin-bottom:12px">${feels.map(([e,l],i)=>`<button class="felt-btn${w.feltLike===(i+1)?' active':''}" data-felt="${i+1}">${e}<br><small>${l}</small></button>`).join('')}</div>
+        <button class="btn btn-primary" id="complete-checkoff">✓ Complete Routine</button>
+      </div>
+    </div>`;
+  }
+
+  // ── GUIDED mode: step-by-step, one exercise at a time with GIF + form cues ──
   const entry=w.entries[w.current];
   const ex=EXERCISES.find(e=>e.id===entry?.exerciseId);
   if(!ex) return '';
   const totalEx=w.entries.length;
   const progress=(w.current/totalEx*100).toFixed(0);
-  // Rest timer
-  if(w.restEnd&&w.restEnd>Date.now()){
-    const remaining=Math.ceil((w.restEnd-Date.now())/1000);
-    return `
-    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px 24px">
-      <div style="font-size:14px;font-weight:600;color:var(--fg2);margin-bottom:8px">REST</div>
-      <div class="rest-timer">${remaining}</div>
-      <div class="rest-label">seconds remaining</div>
-      <div style="width:200px;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin:16px 0">
-        <div style="height:100%;background:var(--accent);border-radius:3px;transition:width .9s;width:${Math.max(0,(1-remaining/w.restDuration)*100)}%"></div>
-      </div>
-      <button class="btn btn-secondary" id="skip-rest" style="width:200px;margin-top:8px">Skip Rest</button>
-    </div>`;
-  }
-  const setsHtml=Array.from({length:entry.sets},(_,i)=>{
-    const setData=entry.sets?.[i];
-    return `<div class="set-row ${setData?'set-done':''}">
-      <div class="set-num">${i+1}</div>
-      <div style="flex:1;font-size:14px;color:var(--fg2)">Target: ${entry.reps} reps · incline ${entry.targetIncline}</div>
-      ${setData?`<span style="color:var(--green);font-weight:600">${setData.reps} ✓</span>`:`
-      <input class="set-input" type="number" value="${entry.reps}" min="1" data-set-reps="${i}" style="width:56px;background:var(--bg3);border:none;border-radius:6px;padding:6px 8px;text-align:center;color:var(--fg);font-size:15px;font-weight:600">
-      <button class="btn btn-sm" data-log-set="${i}" style="background:var(--accent);color:var(--accent-fg)">Log</button>`}
-    </div>`;
-  }).join('');
-  const completedSets=(entry.sets||[]).length;
-  const allDone=completedSets>=entry.sets;
-  return `
-  <div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
-    <div style="padding:16px;background:var(--bg2);border-bottom:1px solid var(--border)">
+  const isLast=w.current+1>=totalEx;
+  return `<div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+    <div style="padding:16px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <div style="font-size:13px;color:var(--fg2);font-weight:600">Exercise ${w.current+1} of ${totalEx}</div>
         <button class="back-btn" id="quit-workout" style="color:var(--red)">Quit</button>
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
       <div style="font-size:20px;font-weight:800;font-family:var(--font-head);margin-top:10px">${ex.name}</div>
-      <div style="font-size:13px;color:var(--fg2)">${ex.muscleGroup} · ${entry.sets} sets × ${entry.reps} reps</div>
+      <div style="font-size:13px;color:var(--fg2)">${ex.muscleGroup} · ${entry.sets} sets × ${entry.reps} reps · incline ${entry.targetIncline}</div>
     </div>
-    <div style="flex:1;overflow-y:auto;padding:12px 16px">
-      <img src="${ex.gifFile}" style="width:100%;max-height:220px;object-fit:contain;border-radius:var(--radius);background:var(--bg3);margin-bottom:12px" alt="${ex.name}">
-      ${ex.formCues[0]?`<div style="background:var(--accent-dim);border-radius:var(--radius-sm);padding:12px;font-size:14px;color:var(--fg2);margin-bottom:12px;border-left:3px solid var(--accent)">${ex.formCues[0]}</div>`:''}
-      <div style="font-size:16px;font-weight:700;margin-bottom:8px;font-family:var(--font-head)">Sets</div>
-      <div class="card-section">${setsHtml}</div>
-      ${allDone?`<button class="btn btn-primary" id="next-ex" style="margin-top:8px">${w.current+1<totalEx?'Next Exercise →':'Finish Workout 🏆'}</button>`:''}
+    <div style="flex:1;overflow-y:auto;padding:16px">
+      <img src="${ex.gifFile}" style="width:100%;max-height:260px;object-fit:contain;border-radius:var(--radius);background:var(--bg3);margin-bottom:16px" alt="${ex.name}">
+      ${ex.formCues.map((c,ci)=>`<div class="cue-item"><div class="cue-num">${ci+1}</div><div>${c}</div></div>`).join('')}
+    </div>
+    <div style="padding:16px;border-top:1px solid var(--border);flex-shrink:0">
+      <button class="btn btn-primary" id="guided-next">
+        ${isLast?'✓ Done — Complete Routine':'✓ Done — Next Exercise →'}
+      </button>
     </div>
   </div>`;
 }
 
 function bindWorkout(){
-  document.getElementById('quit-workout')?.addEventListener('click',()=>showConfirm('Quit workout?','Your progress will be lost.',()=>nav('today')));
-  document.getElementById('skip-rest')?.addEventListener('click',()=>{state.workout.restEnd=null;clearInterval(state.workout.restTimer);render();});
-  document.getElementById('next-ex')?.addEventListener('click',()=>{
+  document.getElementById('quit-workout')?.addEventListener('click',()=>showConfirm('Quit workout?','Your progress will be lost.',()=>{state.workout=null;nav('today');}));
+  // Checkoff mode: checkbox toggles (targeted DOM update — no full re-render needed)
+  document.querySelectorAll('[data-chk-btn]').forEach(el=>el.addEventListener('click',()=>{
+    const i=parseInt(el.dataset.chkBtn);
+    state.workout.checked[i]=!state.workout.checked[i];
+    const done=state.workout.checked[i];
+    el.textContent=done?'✓':'';
+    el.classList.toggle('checked',done);
+    const row=document.querySelector(`[data-chk-row="${i}"]`);
+    if(row) row.classList.toggle('checkoff-done',done);
+  }));
+  // Checkoff mode: felt picker (toggle active class without re-render)
+  document.querySelectorAll('[data-felt]').forEach(el=>el.addEventListener('click',()=>{
+    state.workout.feltLike=parseInt(el.dataset.felt);
+    document.querySelectorAll('[data-felt]').forEach(b=>b.classList.toggle('active',b===el));
+  }));
+  // Checkoff mode: complete routine
+  document.getElementById('complete-checkoff')?.addEventListener('click',async()=>{
+    const w=state.workout;
+    const durationSec=Math.round((Date.now()-w.durationStart)/1000);
+    const log={date:todayStr(),routineId:w.routineId,routineName:w.routineName,mode:'checkoff',sets:[],durationSec,feltLike:w.feltLike||2};
+    const id=await dbPut('logs',log);log.id=id;
+    state.logs.push(log);state.workout=null;showToast('Workout logged! 🎉');nav('today');
+  });
+  // Guided mode: advance step-by-step, show end screen when done
+  document.getElementById('guided-next')?.addEventListener('click',()=>{
     const w=state.workout;
     w.current++;
-    if(w.current>=w.entries.length){finishWorkout();return;}
-    render();
+    if(w.current>=w.entries.length) renderGuidedComplete();
+    else render();
   });
-  document.querySelectorAll('[data-log-set]').forEach(el=>el.addEventListener('click',()=>{
-    const idx=parseInt(el.dataset.logSet);
-    const repsEl=document.querySelector(`[data-set-reps="${idx}"]`);
-    const reps=parseInt(repsEl?.value)||state.workout.entries[state.workout.current].reps;
-    if(!state.workout.entries[state.workout.current].sets) state.workout.entries[state.workout.current].sets=[];
-    state.workout.entries[state.workout.current].sets.push({reps,incline:state.workout.entries[state.workout.current].targetIncline});
-    // Start rest timer
-    const restSec=state.workout.entries[state.workout.current].restSec||60;
-    state.workout.restEnd=Date.now()+restSec*1000;
-    state.workout.restDuration=restSec;
-    clearInterval(state.workout.restTimer);
-    state.workout.restTimer=setInterval(()=>{if(!state.workout.restEnd||Date.now()>=state.workout.restEnd){clearInterval(state.workout.restTimer);state.workout.restEnd=null;}render();},1000);
-    render();
-  }));
 }
 
-async function finishWorkout(){
+// ── Guided workout end screen (replaces entire #view content) ──
+function renderGuidedComplete(){
   const w=state.workout;
-  clearInterval(w.restTimer);
-  const allSets=w.entries.flatMap(e=>e.sets?.map(s=>({exerciseId:e.exerciseId,...s}))||[]);
-  const durationSec=Math.round((Date.now()-w.durationStart)/1000);
-  showWorkoutSummary(w,allSets,durationSec);
+  const feels=[['😊','Easy'],['💪','Medium'],['😤','Hard'],['🔥','Intense'],['🏆','PR Day!']];
+  document.getElementById('view').innerHTML=`
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;padding:32px 24px">
+      <div style="font-size:56px;margin-bottom:12px">🏆</div>
+      <div style="font-size:26px;font-weight:800;font-family:var(--font-head);margin-bottom:6px">All Done!</div>
+      <div style="color:var(--fg2);margin-bottom:28px;font-size:15px">${w.entries.length} exercise${w.entries.length!==1?'s':''} completed</div>
+      <div style="font-size:14px;font-weight:600;color:var(--fg2);margin-bottom:10px">How did it feel?</div>
+      <div class="felt-row" style="width:100%;max-width:340px">${feels.map(([e,l],i)=>`<button class="felt-btn ${i===1?'active':''}" data-felt="${i+1}">${e}<br><small>${l}</small></button>`).join('')}</div>
+      <div style="width:100%;max-width:340px;margin-top:24px">
+        <button class="btn btn-primary" id="complete-routine">✓ Complete Routine</button>
+        <button class="btn btn-secondary" id="quit-workout" style="margin-top:8px">Discard</button>
+      </div>
+    </div>`;
+  document.querySelectorAll('[data-felt]').forEach(el=>el.addEventListener('click',()=>{
+    w.feltLike=parseInt(el.dataset.felt);
+    document.querySelectorAll('[data-felt]').forEach(b=>b.classList.toggle('active',b===el));
+  }));
+  document.getElementById('complete-routine')?.addEventListener('click',async()=>{
+    const durationSec=Math.round((Date.now()-w.durationStart)/1000);
+    const log={date:todayStr(),routineId:w.routineId,routineName:w.routineName,mode:'guided',sets:[],durationSec,feltLike:w.feltLike||2};
+    const id=await dbPut('logs',log);log.id=id;
+    state.logs.push(log);state.workout=null;showToast('Workout logged! 🎉');nav('today');
+  });
+  document.getElementById('quit-workout')?.addEventListener('click',()=>showConfirm('Discard workout?','Progress will not be saved.',()=>{state.workout=null;nav('today');}));
 }
 
-function showWorkoutSummary(w,allSets,durationSec){
-  const feels=[['😊','Easy'],['💪','Medium'],['😤','Hard'],['🔥','Intense'],['🏆','PR Day!']];
-  let feltLike=2;
-  const content=`
-    <div style="text-align:center;font-size:48px;margin-bottom:8px">🏆</div>
-    <div style="text-align:center;font-size:22px;font-weight:800;margin-bottom:4px">Workout Complete!</div>
-    <div style="text-align:center;color:var(--fg2);margin-bottom:16px">${w.entries.length} exercises · ${allSets.length} sets · ${formatDur(durationSec)}</div>
-    <div style="font-size:14px;font-weight:600;color:var(--fg2);margin-bottom:8px">How did it feel?</div>
-    <div class="felt-row">${feels.map(([e,l],i)=>`<button class="felt-btn ${i===1?'active':''}" data-felt="${i+1}">${e}<br><small>${l}</small></button>`).join('')}</div>
-    <button class="btn btn-primary" id="save-workout" style="margin-top:16px">Save & Finish</button>`;
-  showModal('Workout Done!',content);
-  setTimeout(()=>{
-    document.querySelectorAll('[data-felt]').forEach(el=>{
-      el.addEventListener('click',()=>{feltLike=parseInt(el.dataset.felt);document.querySelectorAll('[data-felt]').forEach(b=>b.classList.toggle('active',b===el));});
-    });
-    document.getElementById('save-workout')?.addEventListener('click',async()=>{
-      const log={date:todayStr(),routineId:w.routineId,routineName:w.routineName,mode:'guided',sets:allSets,durationSec,feltLike};
-      const id=await dbPut('logs',log);log.id=id;
-      state.logs.push(log);state.workout=null;closeModal();showToast('Workout saved! 🎉');nav('today');
-    });
-  },50);
-}
 
 // ─── MODAL / TOAST HELPERS ───────────────────────────
 function showModal(title,content){
