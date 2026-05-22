@@ -1473,7 +1473,7 @@ function startWorkout(routineId,mode){
   if(!r) return;
   state.workout={
     routineId,routineName:r.name,mode,
-    entries:r.entries.map(e=>({...e,sets:[]})),
+    entries:r.entries.map(e=>({...e,loggedSets:[]})),
     checked:Array(r.entries.length).fill(false),
     current:0,durationStart:Date.now(),
     restTimer:null,restEnd:null,feltLike:2
