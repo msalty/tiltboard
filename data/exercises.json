@@ -174,6 +174,7 @@
     "movementPattern": "pull",
     "attachment": "handles",
     "gifFile": "images/1000000200000096000000965CFDF1CA71BFDDEE.gif",
+    "videoFile": "images/sliding-board/row.webm",
     "formCues": [
       "Sit on the top edge of the glideboard and hold the handles with your hands, arms extended out in front of you.",
       "Slide the glideboard up by pulling on the handles towards the sides of your navel and allow yourself back down after a short pause.",
@@ -342,6 +343,7 @@
     "movementPattern": "push",
     "attachment": "handles",
     "gifFile": "images/1000000200000096000000966AB8646EDCB8805D.gif",
+    "videoFile": "images/sliding-board/chest-press.webm",
     "formCues": [
       "Sit on the glideboard with your knees bent and hold the handles with your hands on each side of your chest, palms facing down and elbows bent.",
       "Slide the glideboard up by pushing on the handles straight forward and allow yourself back down after a short pause.",
