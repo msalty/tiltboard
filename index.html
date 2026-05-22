@@ -291,7 +291,7 @@ function dbGet(store,key){return new Promise((res,rej)=>{const tx=DB.transaction
 
 // ─── Init ────────────────────────────────────────────
 async function init(){
-  applyTheme('dark');
+  applyTheme(localStorage.getItem('tiltboard-theme') || 'dark');
   await openDB();
   // Load exercises
   const r = await fetch('data/exercises.json'); EXERCISES = await r.json();
@@ -336,6 +336,7 @@ function applyTheme(t){
   document.documentElement.setAttribute('data-theme',t);
   const meta = document.querySelector('meta[name="theme-color"]');
   if(meta) meta.content = t==='light'?'#f2f2f7':'#0f0f0f';
+  try { localStorage.setItem('tiltboard-theme', t); } catch(e) {}
 }
 async function saveSettings(patch){
   Object.assign(state.settings,patch);
