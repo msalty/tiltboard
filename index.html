@@ -269,14 +269,16 @@ function nav(view, subview=null, subId=null){
 // ─── IndexedDB ───────────────────────────────────────
 function openDB(){
   return new Promise((res,rej)=>{
-    const r = indexedDB.open('tiltboard',2);
+    const r = indexedDB.open('tiltboard',3);
     r.onupgradeneeded = e=>{
       const db = e.target.result;
       if(!db.objectStoreNames.contains('routines')) db.createObjectStore('routines',{keyPath:'id'});
       if(!db.objectStoreNames.contains('programs')) db.createObjectStore('programs',{keyPath:'id'});
       if(!db.objectStoreNames.contains('logs')) db.createObjectStore('logs',{keyPath:'id',autoIncrement:true});
-      if(!db.objectStoreNames.contains('settings')) db.createObjectStore('settings');
       if(!db.objectStoreNames.contains('userEx')) db.createObjectStore('userEx',{keyPath:'id'});
+      // Recreate settings store with keyPath so dbPut works correctly
+      if(db.objectStoreNames.contains('settings')) db.deleteObjectStore('settings');
+      db.createObjectStore('settings',{keyPath:'id'});
     };
     r.onsuccess = e=>{DB=e.target.result;res(DB)};
     r.onerror = ()=>rej(r.error);
