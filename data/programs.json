@@ -31,4 +31,69 @@
     },
     "isStarter": true
   }
+  ,
+  {
+    "id": "maintenance-2x",
+    "name": "Maintenance — 2×/week",
+    "description": "The minimum effective dose. Two full-body sessions per week is all the evidence says you need to preserve muscle and fitness during busy stretches.",
+    "weeklyTargetN": 2,
+    "schedule": {
+      "Mon": "full-body-8",
+      "Tue": null,
+      "Wed": null,
+      "Thu": "full-body-8",
+      "Fri": null,
+      "Sat": null,
+      "Sun": null
+    },
+    "isStarter": true
+  },
+  {
+    "id": "strength-5x5",
+    "name": "5×5 Strength — 3×/week",
+    "description": "Modelled on proven 5×5 programs (Stronglifts, Starting Strength). Three full-body sessions per week at heavy load — the most evidence-backed approach for building raw strength.",
+    "weeklyTargetN": 3,
+    "schedule": {
+      "Mon": "compound-strength",
+      "Tue": null,
+      "Wed": "compound-strength",
+      "Thu": null,
+      "Fri": "compound-strength",
+      "Sat": null,
+      "Sun": null
+    },
+    "isStarter": true
+  },
+  {
+    "id": "bro-split-5x",
+    "name": "Classic Body Part Split — 5×/week",
+    "description": "One major muscle group per day — the classic bodybuilder split that dominated the golden era. High per-session volume for each body part with full-week recovery.",
+    "weeklyTargetN": 5,
+    "schedule": {
+      "Mon": "chest-workout",
+      "Tue": "back-workout",
+      "Wed": "shoulders-workout",
+      "Thu": "legs-workout",
+      "Fri": "arms-focus",
+      "Sat": null,
+      "Sun": null
+    },
+    "isStarter": true
+  },
+  {
+    "id": "ppl-6x",
+    "name": "Push / Pull / Legs — 6×/week",
+    "description": "The gold-standard intermediate hypertrophy program. Each movement pattern trained twice per week with a full day of recovery between same-pattern sessions — maximises volume and frequency.",
+    "weeklyTargetN": 6,
+    "schedule": {
+      "Mon": "push-day",
+      "Tue": "pull-day",
+      "Wed": "legs-workout",
+      "Thu": "push-day",
+      "Fri": "pull-day",
+      "Sat": "legs-workout",
+      "Sun": null
+    },
+    "isStarter": true
+  }
 ]

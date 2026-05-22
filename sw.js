@@ -1,4 +1,4 @@
-const CACHE = 'tiltboard-v1.0.2';
+const CACHE = 'tiltboard-v5';
 const SHELL = [
   './',
   'index.html',

@@ -135,16 +135,11 @@ select option{background:var(--bg2)}
 .week-dot.today{border-color:var(--accent)}
 
 /* ===== CALENDAR ===== */
-.heatmap{display:grid;grid-template-columns:repeat(53,1fr);gap:2px;padding:8px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.hm-cell{aspect-ratio:1;border-radius:2px;background:var(--bg3);min-width:10px}
-.hm-cell.l1{background:rgba(48,209,88,.3)}
-.hm-cell.l2{background:rgba(48,209,88,.55)}
-.hm-cell.l3{background:rgba(48,209,88,.8)}
-.hm-cell.l4{background:#30d158}
-[data-theme="warm"] .hm-cell.l1{background:rgba(74,140,63,.25)}
-[data-theme="warm"] .hm-cell.l2{background:rgba(74,140,63,.5)}
-[data-theme="warm"] .hm-cell.l3{background:rgba(74,140,63,.75)}
-[data-theme="warm"] .hm-cell.l4{background:#4a8c3f}
+.heatmap{display:flex;flex-wrap:wrap;gap:2px;padding:4px 0}
+.hm-cell{width:10px;height:10px;border-radius:2px;background:var(--bg3);flex-shrink:0}
+.hm-cell.done{background:var(--accent)}
+.hm-cell.hm-today{outline:2px solid var(--accent);outline-offset:1px}
+.hm-cell.future{background:transparent}
 .month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:8px}
 .month-day{aspect-ratio:1;border-radius:var(--radius-xs);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:var(--fg2);cursor:pointer;position:relative}
 .month-day.worked{background:var(--green);color:#fff;font-weight:700}
@@ -259,7 +254,7 @@ let state = {
   searchQ: '',
   editRoutine: null, editProgram: null, editCustomEx: null,
   workout: null, /* { routineId, mode, entries, current, sets[], durationStart, restTimer } */
-  calView: 'month', calDate: new Date(),
+  calDate: new Date(),
   logs: [], settings: {}
 };
 
@@ -608,46 +603,48 @@ function renderCalendar(){
   return `
   <div class="page-header">
     <div class="page-title">Calendar</div>
-    <div style="display:flex;gap:8px">
-      <button class="chip ${state.calView==='month'?'active':''}" id="cal-month">Month</button>
-      <button class="chip ${state.calView==='heatmap'?'active':''}" id="cal-heat">Year</button>
-    </div>
   </div>
   <div style="padding:8px 16px">
-    ${state.calView==='month'?renderMonthView():renderHeatmap()}
+    ${renderHeatmap()}
   </div>`;
 }
 
 function renderHeatmap(){
   const prog=getActiveProgram();
   const {current,best}=computeStreaks(state.logs,prog?.weeklyTargetN||3);
+
+  // Build a log-date lookup for O(1) access
+  const logMap={};
+  state.logs.forEach(l=>{logMap[l.date]=(logMap[l.date]||0)+1;});
+
   const today=new Date(); today.setHours(12,0,0,0);
-  const start=new Date(today); start.setDate(today.getDate()-364);
-  start.setDate(start.getDate()-(start.getDay()||7)+1); // align to Monday
+  const todayDs=dateStr(today);
+
+  // Start exactly 364 days ago (gives 365 total dots incl. today)
   const cells=[];
-  const d=new Date(start);
-  while(d<=today){
-    const ds=dateStr(d);
-    const count=state.logs.filter(l=>l.date===ds).length;
-    const lvl=count===0?'':count===1?'l1':count===2?'l2':count===3?'l3':'l4';
-    cells.push(`<div class="hm-cell ${lvl}" title="${ds}${count?' ('+count+')'  :''}"></div>`);
-    d.setDate(d.getDate()+1);
+  const start=new Date(today); start.setDate(today.getDate()-364);
+  const cursor=new Date(start);
+  while(cursor<=today){
+    const ds=dateStr(cursor);
+    const done=(logMap[ds]||0)>0;
+    const isToday=ds===todayDs;
+    cells.push(`<div class="hm-cell${done?' done':''}${isToday?' hm-today':''}" title="${ds}${done?' · workout logged':''}"></div>`);
+    cursor.setDate(cursor.getDate()+1);
   }
+
   return `
-    <div style="display:flex;gap:24px;margin-bottom:16px">
+    <div style="display:flex;gap:24px;margin-bottom:14px">
       <div><div style="font-size:32px;font-weight:800;color:var(--accent)">${current}</div><div style="font-size:12px;color:var(--fg2)">Week Streak</div></div>
       <div><div style="font-size:32px;font-weight:800">${best}</div><div style="font-size:12px;color:var(--fg2)">Best</div></div>
       <div><div style="font-size:32px;font-weight:800">${state.logs.length}</div><div style="font-size:12px;color:var(--fg2)">Total</div></div>
     </div>
-    <div class="heatmap" style="padding:8px 0">${cells.join('')}</div>
-    <div style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:var(--fg3)">
-      <span>Less</span>
-      <div class="hm-cell" style="min-width:12px;width:12px;height:12px"></div>
-      <div class="hm-cell l1" style="min-width:12px;width:12px;height:12px"></div>
-      <div class="hm-cell l2" style="min-width:12px;width:12px;height:12px"></div>
-      <div class="hm-cell l3" style="min-width:12px;width:12px;height:12px"></div>
-      <div class="hm-cell l4" style="min-width:12px;width:12px;height:12px"></div>
-      <span>More</span>
+    <div class="heatmap">${cells.join('')}</div>
+    <div style="display:flex;align-items:center;gap:6px;margin-top:8px;margin-bottom:20px;font-size:12px;color:var(--fg3)">
+      <div class="hm-cell" style="width:10px;height:10px;flex-shrink:0"></div><span>Rest day</span>
+      <div class="hm-cell done" style="width:10px;height:10px;flex-shrink:0;margin-left:8px"></div><span>Workout</span>
+    </div>
+    <div style="border-top:1px solid var(--border);margin:0 -16px;padding:0 16px">
+      ${renderMonthView()}
     </div>`;
 }
 
@@ -675,8 +672,6 @@ function renderMonthView(){
 }
 
 function bindCalendar(){
-  document.getElementById('cal-month')?.addEventListener('click',()=>{state.calView='month';render()});
-  document.getElementById('cal-heat')?.addEventListener('click',()=>{state.calView='heatmap';render()});
   document.getElementById('cal-prev')?.addEventListener('click',()=>{state.calDate=new Date(state.calDate.getFullYear(),state.calDate.getMonth()-1,1);render()});
   document.getElementById('cal-next')?.addEventListener('click',()=>{state.calDate=new Date(state.calDate.getFullYear(),state.calDate.getMonth()+1,1);render()});
   document.querySelectorAll('.month-day[data-date]').forEach(el=>{
@@ -1332,6 +1327,16 @@ function renderSettings(){
         <div style="flex:1;padding-left:12px;font-size:15px">Reset All Data</div>
       </div>
     </div>
+    <p class="section-title">App</p>
+    <div class="card-section">
+      <div class="card-row" id="force-reload-btn">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        <div style="flex:1;padding-left:12px">
+          <div style="font-size:15px">Check for Update</div>
+          <div style="font-size:12px;color:var(--fg3);margin-top:2px">Clears cache and reloads the latest version</div>
+        </div>
+      </div>
+    </div>
     <div style="text-align:center;margin-top:24px;font-size:13px;color:var(--fg3)">Tiltboard v1.0 · All data stored locally on this device</div>
   </div>`;
 }
@@ -1345,6 +1350,7 @@ function bindSettings(){
   document.getElementById('import-btn')?.addEventListener('click',()=>document.getElementById('import-file').click());
   document.getElementById('import-file')?.addEventListener('change',e=>importData(e.target.files[0]));
   document.getElementById('reset-btn')?.addEventListener('click',()=>showConfirm('Reset all data?','This will delete all your logs, custom routines, and programs. This cannot be undone.',resetAll));
+  document.getElementById('force-reload-btn')?.addEventListener('click',()=>showConfirm('Check for Update?','This will clear the app cache and reload. The app may take a moment to re-download.',forceReload));
 }
 
 // ─── EXPORT / IMPORT ─────────────────────────────────
@@ -1427,6 +1433,20 @@ async function importData(file){
       showToast('Import complete!');nav('today');
     });
   }catch(err){showToast('Import failed: '+err.message);}
+}
+
+async function forceReload(){
+  try{
+    if('serviceWorker' in navigator){
+      const regs=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r=>r.unregister()));
+    }
+    if('caches' in window){
+      const keys=await caches.keys();
+      await Promise.all(keys.map(k=>caches.delete(k)));
+    }
+  }catch(e){console.warn('Cache clear error:',e);}
+  location.reload(true);
 }
 
 async function resetAll(){

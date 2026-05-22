@@ -106,5 +106,68 @@
       {"exerciseId": "lateral-deltoid-raise", "sets": 3, "reps": 8, "restSec": 45, "targetIncline": 4},
       {"exerciseId": "front-deltoid-raise", "sets": 3, "reps": 8, "restSec": 45, "targetIncline": 4}
     ]
+  },
+  {
+    "id": "push-day",
+    "name": "Push Day",
+    "description": "Chest, shoulders and triceps — the PPL push session.",
+    "isStarter": true,
+    "entries": [
+      {"exerciseId": "chest-press", "sets": 4, "reps": 10, "restSec": 75, "targetIncline": 6},
+      {"exerciseId": "wide-grip-chest-press", "sets": 3, "reps": 12, "restSec": 60, "targetIncline": 5},
+      {"exerciseId": "incline-chest-fly", "sets": 3, "reps": 12, "restSec": 60, "targetIncline": 5},
+      {"exerciseId": "shoulder-press", "sets": 4, "reps": 10, "restSec": 75, "targetIncline": 6},
+      {"exerciseId": "lateral-deltoid-raise", "sets": 3, "reps": 15, "restSec": 45, "targetIncline": 4},
+      {"exerciseId": "front-deltoid-raise", "sets": 3, "reps": 12, "restSec": 45, "targetIncline": 4},
+      {"exerciseId": "triceps-extension", "sets": 3, "reps": 12, "restSec": 45, "targetIncline": 4},
+      {"exerciseId": "kneeling-triceps-extension", "sets": 3, "reps": 12, "restSec": 45, "targetIncline": 4}
+    ]
+  },
+  {
+    "id": "pull-day",
+    "name": "Pull Day",
+    "description": "Back and biceps — the PPL pull session.",
+    "isStarter": true,
+    "entries": [
+      {"exerciseId": "row", "sets": 4, "reps": 10, "restSec": 75, "targetIncline": 6},
+      {"exerciseId": "lateral-pulldown", "sets": 4, "reps": 10, "restSec": 75, "targetIncline": 6},
+      {"exerciseId": "back-fly", "sets": 3, "reps": 12, "restSec": 60, "targetIncline": 4},
+      {"exerciseId": "pull-up", "sets": 3, "reps": 8, "restSec": 75, "targetIncline": 7},
+      {"exerciseId": "hyperextension", "sets": 3, "reps": 15, "restSec": 45, "targetIncline": 3},
+      {"exerciseId": "biceps-curl", "sets": 3, "reps": 12, "restSec": 45, "targetIncline": 4},
+      {"exerciseId": "chin-up", "sets": 3, "reps": 8, "restSec": 60, "targetIncline": 6},
+      {"exerciseId": "rotating-back-fly", "sets": 3, "reps": 12, "restSec": 45, "targetIncline": 4}
+    ]
+  },
+  {
+    "id": "arms-focus",
+    "name": "Arms",
+    "description": "Biceps and triceps — paired supersets for peak arm development.",
+    "isStarter": true,
+    "entries": [
+      {"exerciseId": "biceps-curl", "sets": 4, "reps": 12, "restSec": 60, "targetIncline": 4},
+      {"exerciseId": "triceps-extension", "sets": 4, "reps": 12, "restSec": 60, "targetIncline": 4},
+      {"exerciseId": "lateral-single-arm-biceps-curl", "sets": 3, "reps": 12, "restSec": 45, "targetIncline": 4},
+      {"exerciseId": "prone-triceps-extension", "sets": 3, "reps": 12, "restSec": 45, "targetIncline": 4},
+      {"exerciseId": "chin-up", "sets": 3, "reps": 8, "restSec": 60, "targetIncline": 6},
+      {"exerciseId": "kneeling-triceps-extension", "sets": 3, "reps": 12, "restSec": 45, "targetIncline": 4},
+      {"exerciseId": "lying-biceps-curl", "sets": 3, "reps": 12, "restSec": 45, "targetIncline": 4},
+      {"exerciseId": "lateral-single-arm-triceps-extension", "sets": 3, "reps": 12, "restSec": 45, "targetIncline": 4}
+    ]
+  },
+  {
+    "id": "compound-strength",
+    "name": "Compound Strength",
+    "description": "Heavy compound movements — 5×5 loading across the whole body for raw strength.",
+    "isStarter": true,
+    "entries": [
+      {"exerciseId": "squat", "sets": 5, "reps": 5, "restSec": 120, "targetIncline": 7},
+      {"exerciseId": "chest-press", "sets": 5, "reps": 5, "restSec": 120, "targetIncline": 7},
+      {"exerciseId": "row", "sets": 5, "reps": 5, "restSec": 120, "targetIncline": 7},
+      {"exerciseId": "shoulder-press", "sets": 3, "reps": 5, "restSec": 90, "targetIncline": 6},
+      {"exerciseId": "pull-up", "sets": 3, "reps": 5, "restSec": 90, "targetIncline": 7},
+      {"exerciseId": "front-lunge", "sets": 3, "reps": 8, "restSec": 90, "targetIncline": 6},
+      {"exerciseId": "hyperextension", "sets": 3, "reps": 10, "restSec": 60, "targetIncline": 4}
+    ]
   }
 ]
