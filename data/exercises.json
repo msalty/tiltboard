@@ -606,6 +606,7 @@
     "movementPattern": "squat",
     "attachment": "squat-stand",
     "gifFile": "images/10000002000000960000009663DD94DEFD979282.gif",
+    "videoFile": "images/sliding-board/squat.webm",
     "formCues": [
       "Lie on your back on the glideboard with your feet on the squat stand, knees at 90 degree angles.",
       "Slide the glideboard up by straightening your legs and allow yourself back down after a short pause.",
