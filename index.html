@@ -746,7 +746,13 @@ function renderLibrary(){
 }
 
 function bindLibrary(){
-  document.getElementById('lib-search')?.addEventListener('input',e=>{state.searchQ=e.target.value;render()});
+  document.getElementById('lib-search')?.addEventListener('input',e=>{
+    state.searchQ=e.target.value;
+    const pos=e.target.selectionStart;
+    render();
+    const inp=document.getElementById('lib-search');
+    if(inp){inp.focus();inp.setSelectionRange(pos,pos);}
+  });
   document.getElementById('fav-toggle')?.addEventListener('click',()=>{state.filterFav=!state.filterFav;render()});
   document.getElementById('new-exercise')?.addEventListener('click',()=>{
     state.editCustomEx={id:'',name:'',muscleGroup:'Chest',movementPattern:'push',attachment:'none',gifFile:null,formCues:[''],favorite:false};
