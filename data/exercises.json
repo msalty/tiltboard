@@ -576,6 +576,7 @@
     "movementPattern": "hinge",
     "attachment": "wing",
     "gifFile": "images/1000000200000096000000967596437D84BE318F.gif",
+    "videoFile": "images/sliding-board/leg-curl.webm",
     "formCues": [
       "Lie on your back on the glideboard with your legs extended and attach your ankles to the wing attachment.",
       "Slide the glideboard up by curling your legs and allow yourself back down after a short pause.",
