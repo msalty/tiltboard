@@ -441,7 +441,7 @@
     "movementPattern": "push",
     "attachment": "handles",
     "gifFile": "images/10000002000000960000009687DB42CF4E20E23F.gif",
-        "videoFile": "images/sliding-board/chest-fly.webm",
+    "videoFile": "images/sliding-board/chest-fly.webm",
     "formCues": [
       "Sit on the glideboard with your knees bent and hold the handles with your hands on each side of your chest, palms facing each other and elbows only slightly bent.",
       "Slide the glideboard up by pulling the handles close to each other, arms parallel to the floor other and allow yourself back down after a short pause.",
@@ -456,6 +456,7 @@
     "movementPattern": "push",
     "attachment": "handles",
     "gifFile": "images/100000020000009600000096C59D42FADF780D6E.gif",
+    "videoFile": "images/sliding-board/incline-chest-fly.webm",
     "formCues": [
       "Sit on the glideboard with your knees bent and hold the handles with your hands on each side of your chest, palms facing each other and elbows only slightly bent.",
       "Slide the glideboard up by pulling the handles close to each other and up in front of your head and allow yourself back down after a short pause.",
