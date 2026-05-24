@@ -549,7 +549,7 @@ function bindToday(){
   document.getElementById('settings-btn')?.addEventListener('click',()=>nav('settings'));
   document.getElementById('start-guided')?.addEventListener('click',e=>startWorkout(e.target.dataset.rid,'guided'));
   document.getElementById('start-checkoff')?.addEventListener('click',e=>startWorkout(e.target.dataset.rid,'checkoff'));
-  document.getElementById('free-checkoff')?.addEventListener('click',()=>showRoutinePicker('checkoff'));
+  document.getElementById('free-checkoff')?.addEventListener('click',()=>showWorkoutModePicker());
   bindSwipeRows();
 }
 
@@ -1521,6 +1521,17 @@ function startWorkout(routineId,mode){
     restTimer:null,restEnd:null,feltLike:2
   };
   nav('workout');
+}
+
+function showWorkoutModePicker(){
+  showModal('Choose Workout Type',`
+    <button class="btn btn-primary" id="pick-guided" style="margin-bottom:8px">Start Guided Workout</button>
+    <button class="btn btn-secondary" id="pick-checkoff">Quick Check-Off</button>
+  `);
+  setTimeout(()=>{
+    document.getElementById('pick-guided')?.addEventListener('click',()=>{closeModal();showRoutinePicker('guided');});
+    document.getElementById('pick-checkoff')?.addEventListener('click',()=>{closeModal();showRoutinePicker('checkoff');});
+  },50);
 }
 
 function showRoutinePicker(mode){
