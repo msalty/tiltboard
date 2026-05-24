@@ -41,7 +41,7 @@ No account needed. No subscription. No cloud. Everything is stored on your phone
 
 ## Installing on Your Phone
 
-Tiltboard is a web app that installs directly onto your home screen — no app store required.
+Tiltboard is a web app that installs directly onto your home screen — no app store required.  Just visit [Tiltboard on the web](https://msalty.github.io/tiltboard/) and install it on your phone using the directions below - it's that easy.
 
 **On iPhone (Safari):**
 1. Open the app in Safari
@@ -55,7 +55,11 @@ Tiltboard is a web app that installs directly onto your home screen — no app s
 3. Tap "Add to Home Screen" or "Install App"
 4. Tap "Install"
 
-Once installed, Tiltboard works just like a native app — and it works offline too, so your workouts are never interrupted by a spotty connection.
+Once installed, Tiltboard works just like a native app — and it works offline too, so your workouts are never interrupted by a spotty connection or lack of internet.  
+
+All data is stored on your device and the app is free to use forever - that's a deal that's hard to beat.  If you like it, hit the link above to buy me a coffee.  Hope you enjoy.  
+
+Report any issues or feature requests here: https://github.com/msalty/tiltboard/issues
 
 ---
 
@@ -65,7 +69,7 @@ Built for sliding bench trainers. Designed for real life.
 
 ## Disclaimer
 
-Tiltboard is an independent app and is not affiliated with, endorsed by, or connected to any sliding bench trainer manufacturer.
+[Tiltboard](https://msalty.github.io/tiltboard/) is an independent app and is not affiliated with, endorsed by, or connected to any sliding bench trainer manufacturer.
 
 Total Gym is a registered trademark of Total Gym Global Corp. Gr8flex is a registered trademark of Gr8flex USA. Weider and Weider Ultimate Body Works are registered trademarks of iFIT Health & Fitness, Inc. Marcy is a registered trademark of Marcy Fitness Products. Stamina is a registered trademark of Stamina Products, Inc.
 
