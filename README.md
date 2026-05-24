@@ -58,11 +58,6 @@ Once installed, Tiltboard works just like a native app — and it works offline 
 
 Built for sliding bench trainers. Designed for real life.
 
-
-## Disclaimers
-
-Good instinct to expand this. Here's a refined version — I've also added **Marcy** and **Stamina**, two other well-known brands that make sliding bench trainers:
-
 ---
 
 ## Disclaimer
