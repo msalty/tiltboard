@@ -1,5 +1,5 @@
+![Tiltboard Screenshots](images/screenshots/tiltboard-hero.jpg)
 # Tiltboard
-
 **The workout companion built for your sliding bench trainer.**
 
 If you own a Total Gym, Gr8flex, Weider Ultimate Body Works, or similar sliding bench trainer, you know the feeling: you've got a manual full of exercises, but no real plan for putting them together — and no easy way to stay consistent over time. Tiltboard fixes that.
@@ -7,8 +7,6 @@ If you own a Total Gym, Gr8flex, Weider Ultimate Body Works, or similar sliding 
 Install it on your phone like any other app, and you've got everything you need to build a routine, follow a program, and actually stick with it.
 
 <a href="https://www.buymeacoffee.com/msalty" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
-
-![Tiltboard Screenshots](images/screenshots/tiltboard-hero.jpg)
 ---
 
 ## What You Get
