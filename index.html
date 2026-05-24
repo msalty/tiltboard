@@ -758,7 +758,7 @@ function bindLibrary(){
   });
   document.getElementById('fav-toggle')?.addEventListener('click',()=>{state.filterFav=!state.filterFav;render()});
   document.getElementById('new-exercise')?.addEventListener('click',()=>{
-    state.editCustomEx={id:'',name:'',muscleGroup:'Chest',movementPattern:'push',attachment:'none',gifFile:null,formCues:[''],favorite:false};
+    state.editCustomEx={id:'',name:'',muscleGroup:'Chest',movementPattern:'push',attachment:'none',gifFile:null,videoFile:null,formCues:[''],favorite:false};
     nav('library','add-ex');
   });
   document.querySelectorAll('[data-grp]').forEach(el=>el.addEventListener('click',()=>{state.filterGroup=el.dataset.grp;render()}));
@@ -840,9 +840,11 @@ function renderCustomExEditor(){
       <textarea class="cue-input" data-cue="${i}" rows="2" placeholder="Step ${i+1}…">${c}</textarea>
       <button class="icon-btn" data-cue-del="${i}" style="color:var(--red);margin-top:6px">✕</button>
     </div>`).join('');
-  const imgPreview=ex.gifFile
-    ?`<img src="${ex.gifFile}" id="cex-img-preview" style="width:80px;height:80px;object-fit:contain;border-radius:var(--radius);background:var(--bg3)">`
-    :`<div id="cex-img-preview" style="width:80px;height:80px;border-radius:var(--radius);background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--fg3);font-size:28px">🖼️</div>`;
+  const imgPreview=ex.videoFile
+    ?`<video id="cex-img-preview" src="${ex.videoFile}" style="width:80px;height:80px;object-fit:contain;border-radius:var(--radius);background:var(--bg3)" autoplay muted loop playsinline></video>`
+    :ex.gifFile
+      ?`<img src="${ex.gifFile}" id="cex-img-preview" style="width:80px;height:80px;object-fit:contain;border-radius:var(--radius);background:var(--bg3)">`
+      :`<div id="cex-img-preview" style="width:80px;height:80px;border-radius:var(--radius);background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--fg3);font-size:28px">🖼️</div>`;
   return `
   <div class="page-header">
     <button class="back-btn" id="cex-back">← Library</button>
@@ -856,11 +858,11 @@ function renderCustomExEditor(){
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
       ${imgPreview}
       <div style="display:flex;flex-direction:column;gap:6px">
-        <button class="btn btn-secondary" id="cex-img-pick" style="padding:8px 16px">Choose Image</button>
-        ${ex.gifFile?`<button class="btn" id="cex-img-clear" style="background:none;color:var(--red);padding:4px 0;font-size:13px;text-align:left">Remove image</button>`:''}
+        <button class="btn btn-secondary" id="cex-img-pick" style="padding:8px 16px">Choose Image / Video</button>
+        ${(ex.gifFile||ex.videoFile)?`<button class="btn" id="cex-img-clear" style="background:none;color:var(--red);padding:4px 0;font-size:13px;text-align:left">Remove image</button>`:''}
       </div>
     </div>
-    <input type="file" id="cex-img-file" accept="image/*" style="display:none">
+    <input type="file" id="cex-img-file" accept="image/*,video/webm" style="display:none">
 
     <p class="section-title" style="margin-bottom:8px">Muscle Group</p>
     <div class="chip-row" id="cex-group-chips" style="margin-bottom:16px">
@@ -928,20 +930,23 @@ function bindCustomExEditor(){
   document.getElementById('cex-img-pick')?.addEventListener('click',()=>document.getElementById('cex-img-file')?.click());
   document.getElementById('cex-img-file')?.addEventListener('change',e=>{
     const file=e.target.files[0]; if(!file) return;
+    const isVideo=file.type.startsWith('video/');
     const reader=new FileReader();
     reader.onload=re=>{
-      ex.gifFile=re.target.result;
+      if(isVideo){ ex.videoFile=re.target.result; ex.gifFile=null; }
+      else { ex.gifFile=re.target.result; ex.videoFile=null; }
       const prev=document.getElementById('cex-img-preview');
       if(prev){
-        const img=document.createElement('img');
-        img.id='cex-img-preview';img.src=ex.gifFile;
-        img.style.cssText='width:80px;height:80px;object-fit:contain;border-radius:var(--radius);background:var(--bg3)';
-        prev.replaceWith(img);
+        const el=document.createElement(isVideo?'video':'img');
+        el.id='cex-img-preview';el.src=re.target.result;
+        el.style.cssText='width:80px;height:80px;object-fit:contain;border-radius:var(--radius);background:var(--bg3)';
+        if(isVideo){el.autoplay=true;el.muted=true;el.loop=true;el.setAttribute('playsinline','');}
+        prev.replaceWith(el);
       }
     };
     reader.readAsDataURL(file);
   });
-  document.getElementById('cex-img-clear')?.addEventListener('click',()=>{ex.gifFile=null;render();});
+  document.getElementById('cex-img-clear')?.addEventListener('click',()=>{ex.gifFile=null;ex.videoFile=null;render();});
 
   // Form cue delete
   document.querySelectorAll('[data-cue-del]').forEach(el=>el.addEventListener('click',()=>{
