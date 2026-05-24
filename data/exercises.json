@@ -995,6 +995,7 @@
     "movementPattern": "pull",
     "attachment": "handles",
     "gifFile": "images/1000000200000096000000967173C0D2803F07D4.gif",
+    "videoFile": "images/sliding-board/lateral-arm-pull.webm",
     "formCues": [
       "Sit sideways on the glideboard and hold one handle with the hand opposite to it, arms extended and palm facing down.",
       "Slide the glideboard up by pulling the handle straight back while keeping it at the same height off the floor and allow yourself back down after a short pause.",
