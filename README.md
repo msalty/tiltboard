@@ -6,6 +6,8 @@ If you own a Total Gym, Gr8flex, Weider Ultimate Body Works, or similar sliding 
 
 Install it on your phone like any other app, and you've got everything you need to build a routine, follow a program, and actually stick with it.
 
+<a href="https://www.buymeacoffee.com/msalty" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+
 ---
 
 ## What You Get
