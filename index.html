@@ -1622,8 +1622,8 @@ function bindWorkout(){
   const tick=()=>{
     const el=elapsedEl(); if(!el||!state.workout) return;
     const s=Math.floor((Date.now()-state.workout.durationStart)/1000);
-    const m=Math.floor(s/60);
-    el.textContent='⏱ '+String(m).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+    const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
+    el.textContent='⏱ '+(h?h+':'+String(m).padStart(2,'0'):String(m).padStart(2,'0'))+':'+String(sec).padStart(2,'0');
   };
   tick();
   _workoutTimer=setInterval(tick,1000);
