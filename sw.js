@@ -1,10 +1,14 @@
-const CACHE = 'tiltboard-v7';
+const CACHE = 'tiltboard-v8';
 const SHELL = [
   './',
   'index.html',
   'manifest.webmanifest',
-  'icons/icon-192.png',
-  'icons/icon-512.png',
+  'favicon.svg',
+  'favicon.ico',
+  'favicon-96x96.png',
+  'apple-touch-icon.png',
+  'icons/web-app-manifest-192x192.png',
+  'icons/web-app-manifest-512x512.png',
   'data/exercises.json',
   'data/routines.json',
   'data/programs.json',
