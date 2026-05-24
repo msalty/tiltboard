@@ -841,7 +841,9 @@ function renderCustomExEditor(){
       <button class="icon-btn" data-cue-del="${i}" style="color:var(--red);margin-top:6px">✕</button>
     </div>`).join('');
   const imgPreview=ex.gifFile
-    ?`<img src="${ex.gifFile}" id="cex-img-preview" style="width:80px;height:80px;object-fit:contain;border-radius:var(--radius);background:var(--bg3)">`
+    ?(ex.gifFile.startsWith('data:video/')
+      ?`<video id="cex-img-preview" src="${ex.gifFile}" style="width:80px;height:80px;object-fit:contain;border-radius:var(--radius);background:var(--bg3)" autoplay muted loop playsinline></video>`
+      :`<img src="${ex.gifFile}" id="cex-img-preview" style="width:80px;height:80px;object-fit:contain;border-radius:var(--radius);background:var(--bg3)">`)
     :`<div id="cex-img-preview" style="width:80px;height:80px;border-radius:var(--radius);background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--fg3);font-size:28px">🖼️</div>`;
   return `
   <div class="page-header">
@@ -856,11 +858,11 @@ function renderCustomExEditor(){
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
       ${imgPreview}
       <div style="display:flex;flex-direction:column;gap:6px">
-        <button class="btn btn-secondary" id="cex-img-pick" style="padding:8px 16px">Choose Image</button>
+        <button class="btn btn-secondary" id="cex-img-pick" style="padding:8px 16px">Choose Image / Video</button>
         ${ex.gifFile?`<button class="btn" id="cex-img-clear" style="background:none;color:var(--red);padding:4px 0;font-size:13px;text-align:left">Remove image</button>`:''}
       </div>
     </div>
-    <input type="file" id="cex-img-file" accept="image/*" style="display:none">
+    <input type="file" id="cex-img-file" accept="image/*,video/webm" style="display:none">
 
     <p class="section-title" style="margin-bottom:8px">Muscle Group</p>
     <div class="chip-row" id="cex-group-chips" style="margin-bottom:16px">
@@ -933,10 +935,12 @@ function bindCustomExEditor(){
       ex.gifFile=re.target.result;
       const prev=document.getElementById('cex-img-preview');
       if(prev){
-        const img=document.createElement('img');
-        img.id='cex-img-preview';img.src=ex.gifFile;
-        img.style.cssText='width:80px;height:80px;object-fit:contain;border-radius:var(--radius);background:var(--bg3)';
-        prev.replaceWith(img);
+        const isVideo=file.type.startsWith('video/');
+        const el=document.createElement(isVideo?'video':'img');
+        el.id='cex-img-preview';el.src=ex.gifFile;
+        el.style.cssText='width:80px;height:80px;object-fit:contain;border-radius:var(--radius);background:var(--bg3)';
+        if(isVideo){el.autoplay=true;el.muted=true;el.loop=true;el.setAttribute('playsinline','');}
+        prev.replaceWith(el);
       }
     };
     reader.readAsDataURL(file);
