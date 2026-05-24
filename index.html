@@ -72,6 +72,13 @@ html,body{background:var(--bg2);margin:0;padding:0}
 .nav-btn svg{width:22px;height:22px}
 .nav-btn span{font-size:10px;font-weight:500}
 
+/* ===== iOS SAFE AREA ===== */
+@supports (-webkit-touch-callout:none){
+  #app{padding-top:env(safe-area-inset-top)}
+  #nav{height:calc(var(--nav-h) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}
+  #view{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 8px)}
+}
+
 /* ===== HEADER ===== */
 .page-header{padding:16px 16px 8px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:50}
 .page-title{font-size:28px;font-weight:700;font-family:var(--font-head)}
