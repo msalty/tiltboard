@@ -699,11 +699,14 @@ const GROUPS=['All','Abdominal','Back','Chest','Legs','Shoulders','Biceps','Tric
 const PATTERNS=['All','push','pull','squat','hinge','core','isolation'];
 const ATTACHES=['All','none','handles','wing','squat-stand','leg-pull-cable'];
 
-function exMediaEl(ex,cls,style){
+function exMediaEl(ex,cls,style,lazy){
   if(!ex) return null;
   const c=cls?` class="${cls}"`:'';
   const s=style?` style="${style}"`:'';
-  if(ex.videoFile) return `<video${c}${s} src="${ex.videoFile}" autoplay muted loop playsinline></video>`;
+  if(ex.videoFile){
+    if(lazy) return `<video${c}${s} data-src="${ex.videoFile}" muted loop playsinline preload="none"></video>`;
+    return `<video${c}${s} src="${ex.videoFile}" autoplay muted loop playsinline></video>`;
+  }
   if(ex.gifFile) return `<img${c}${s} src="${ex.gifFile}" alt="${ex.name||''}" loading="lazy">`;
   return null;
 }
@@ -719,7 +722,7 @@ function renderLibrary(){
   const patChips=PATTERNS.map(p=>`<button class="chip ${state.filterPattern===p?'active':''}" data-pat="${p}">${p==='All'?'All Patterns':p}</button>`).join('');
   const rows=exs.map(e=>`
     <div class="ex-row" data-exid="${e.id}">
-      ${exMediaEl(e,'ex-gif')||`<div class="ex-gif" style="background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🏋️</div>`}
+      ${exMediaEl(e,'ex-gif',null,true)||`<div class="ex-gif" style="background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🏋️</div>`}
       <div class="ex-info">
         <div class="ex-name">${e.name}${e.isCustom?'<span class="custom-badge">custom</span>':''}</div>
         <div class="ex-meta">${e.muscleGroup} · ${e.movementPattern}</div>
@@ -766,6 +769,19 @@ function bindLibrary(){
     if(ex){ex.favorite=!ex.favorite;await dbPut('userEx',{id:ex.id,favorite:ex.favorite});render();}
   }));
   document.querySelectorAll('.ex-row').forEach(el=>el.addEventListener('click',()=>nav('library','detail',el.dataset.exid)));
+
+  const libObserver=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      const vid=entry.target;
+      if(entry.isIntersecting){
+        if(!vid.src && vid.dataset.src) vid.src=vid.dataset.src;
+        vid.play().catch(()=>{});
+      } else {
+        vid.pause();
+      }
+    });
+  },{threshold:0.1});
+  document.querySelectorAll('.ex-row video[data-src], .ex-row video[src]').forEach(v=>libObserver.observe(v));
 }
 
 function renderExDetail(id){
