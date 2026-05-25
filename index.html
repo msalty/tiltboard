@@ -475,8 +475,7 @@ function renderToday(){
       if(!l.date) return false;
       const ld=new Date(l.date+'T12:00:00');
       const ldd=(ld.getDay()+6)%7;
-      const diff=Math.floor((new Date()-ld)/86400000);
-      return ldd===i && diff<=7;
+      return ldd===i && weekKey(ld)===weekKey(new Date());
     });
     const isDone=logs.length>0;
     const isToday=i===todayIdx;
