@@ -1121,18 +1121,36 @@ function showExercisePicker(){
       .filter(e=>groupFilter==='All'||e.muscleGroup===groupFilter);
   }
 
+  let pickerObserver=null;
+
   function updateList(){
     const list=document.getElementById('picker-ex-list');
     if(!list) return;
+    if(pickerObserver){pickerObserver.disconnect();pickerObserver=null;}
     const rows=getFiltered().map(e=>`
       <div class="ex-row picker-ex" data-exid="${e.id}">
-        ${exMediaEl(e,'ex-gif','width:40px;height:40px')||''}
+        ${exMediaEl(e,'ex-gif','width:40px;height:40px',true)||''}
         <div class="ex-info"><div class="ex-name">${e.name}</div><div class="ex-meta">${e.muscleGroup}</div></div>
       </div>`).join('');
     list.innerHTML=rows||'<div style="padding:16px;text-align:center;color:var(--fg3)">No exercises match.</div>';
     list.querySelectorAll('.picker-ex').forEach(el=>el.addEventListener('click',()=>{
       showExEntryModal(el.dataset.exid); // showModal inside already closes the picker
     }));
+    const vids=list.querySelectorAll('video[data-src],video[src]');
+    if(vids.length){
+      pickerObserver=new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+          const vid=entry.target;
+          if(entry.isIntersecting){
+            if(!vid.src&&vid.dataset.src) vid.src=vid.dataset.src;
+            vid.play().catch(()=>{});
+          } else {
+            vid.pause();
+          }
+        });
+      },{root:list,threshold:0.1});
+      vids.forEach(v=>pickerObserver.observe(v));
+    }
   }
 
   function updateChips(){
