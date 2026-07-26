@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#0f0f0f">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Tiltboard">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon.ico" sizes="32x32">
@@ -15,8 +15,11 @@
 <title>Tiltboard</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{height:100%;font-size:16px;-webkit-text-size-adjust:100%;text-size-adjust:100%}
-body{height:100%;background:var(--bg);color:var(--fg);font-family:var(--font-body);overscroll-behavior:none;overflow:hidden}
+html{height:100%;font-size:16px;-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:manipulation}
+/* A scrolled BODY is what makes the whole app slide up and misplace the bottom
+   bar after rotating on iOS. The app scrolls internally (#view, modals). */
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body)}
 
 /* ===== THEMES ===== */
 :root{
@@ -67,9 +70,11 @@ body{height:100%;background:var(--bg);color:var(--fg);font-family:var(--font-bod
 
 /* ===== LAYOUT ===== */
 html,body{background:var(--bg2);margin:0;padding:0}
-#app{position:fixed;top:0;right:0;bottom:0;left:0;display:flex;flex-direction:column;overflow:hidden;padding-top:var(--safe-t)}
-#view{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h) + 8px)}
-#nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav-h);background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:var(--safe-b)}
+/* dvh tracks the real viewport through rotations and URL-bar show/hide */
+#app{display:flex;flex-direction:column;height:100%;height:100dvh;overflow:hidden;padding-top:var(--safe-t)}
+#view{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+/* Docked, in-flow bar on desktop — the content area sizes around it automatically */
+#nav{flex-shrink:0;height:calc(var(--nav-h) + var(--safe-b));background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:var(--safe-b)}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;color:var(--fg3);font-size:10px;cursor:pointer;padding:6px 4px;transition:color var(--transition)}
 .nav-btn.active{color:var(--accent)}
 .nav-btn svg{width:22px;height:22px}
@@ -77,24 +82,22 @@ html,body{background:var(--bg2);margin:0;padding:0}
 
 /* ===== MOBILE: floating pill nav (adapted from Billy pattern) ===== */
 @media (max-width:800px){
+  /* Out of flow, so content scrolls underneath the frosted pill */
   #nav{
+    position:fixed;
     left:16px;right:16px;
     bottom:max(12px, env(safe-area-inset-bottom, 0px));
     height:var(--nav-h);padding-bottom:0;
-    border:1px solid var(--border);border-top:1px solid var(--border);
+    border:1px solid var(--border);
     border-radius:calc(var(--nav-h) / 2);
     background:color-mix(in srgb, var(--bg2) 85%, transparent);
     backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
     box-shadow:0 8px 24px rgba(0,0,0,.28);
     overflow:hidden;
   }
+  /* Pill is out of flow — keep the last row clear of it */
   #view{padding-bottom:calc(var(--nav-h) + max(12px, env(safe-area-inset-bottom, 0px)) + 20px)}
   #toast{bottom:calc(var(--nav-h) + max(12px, env(safe-area-inset-bottom, 0px)) + 14px)}
-}
-
-/* ===== iOS SAFE AREA ===== */
-@supports (-webkit-touch-callout:none){
-  #app{padding-top:env(safe-area-inset-top)}
 }
 
 /* ===== HEADER ===== */
@@ -1776,6 +1779,10 @@ function showToast(msg){
 
 // ─── Bootstrap ───────────────────────────────────────
 document.addEventListener('DOMContentLoaded',init);
+
+// Safety net: a scrolled body misplaces the bottom bar after rotating on iOS.
+window.addEventListener('resize',()=>window.scrollTo(0,0));
+window.addEventListener('orientationchange',()=>setTimeout(()=>window.scrollTo(0,0),60));
 </script>
 </body>
 </html>
