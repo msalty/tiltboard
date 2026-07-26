@@ -69,11 +69,28 @@ body{height:100%;background:var(--bg);color:var(--fg);font-family:var(--font-bod
 html,body{background:var(--bg2);margin:0;padding:0}
 #app{position:fixed;top:0;right:0;bottom:0;left:0;display:flex;flex-direction:column;overflow:hidden;padding-top:var(--safe-t)}
 #view{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h) + 8px)}
-#nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav-h);background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100}
+#nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav-h);background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:var(--safe-b)}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;color:var(--fg3);font-size:10px;cursor:pointer;padding:6px 4px;transition:color var(--transition)}
 .nav-btn.active{color:var(--accent)}
 .nav-btn svg{width:22px;height:22px}
 .nav-btn span{font-size:10px;font-weight:500}
+
+/* ===== MOBILE: floating pill nav (adapted from Billy pattern) ===== */
+@media (max-width:800px){
+  #nav{
+    left:16px;right:16px;
+    bottom:max(12px, env(safe-area-inset-bottom, 0px));
+    height:var(--nav-h);padding-bottom:0;
+    border:1px solid var(--border);border-top:1px solid var(--border);
+    border-radius:calc(var(--nav-h) / 2);
+    background:color-mix(in srgb, var(--bg2) 85%, transparent);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    box-shadow:0 8px 24px rgba(0,0,0,.28);
+    overflow:hidden;
+  }
+  #view{padding-bottom:calc(var(--nav-h) + max(12px, env(safe-area-inset-bottom, 0px)) + 20px)}
+  #toast{bottom:calc(var(--nav-h) + max(12px, env(safe-area-inset-bottom, 0px)) + 14px)}
+}
 
 /* ===== iOS SAFE AREA ===== */
 @supports (-webkit-touch-callout:none){
