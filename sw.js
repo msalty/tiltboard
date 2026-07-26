@@ -1,4 +1,4 @@
-const CACHE = 'tiltboard-v8';
+const CACHE = 'tiltboard-v9';
 const SHELL = [
   './',
   'index.html',
@@ -108,6 +108,24 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+
+  // Network-first for the app shell so a UI change can't get stuck behind a
+  // stale cache entry. Falls back to cache when offline.
+  const isShell = e.request.mode === 'navigate' ||
+                  new URL(e.request.url).pathname.endsWith('/index.html');
+  if (isShell) {
+    e.respondWith(
+      fetch(e.request).then(res => {
+        if (res.ok) {
+          const clone = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+        }
+        return res;
+      }).catch(() => caches.match(e.request).then(c => c || caches.match('index.html')))
+    );
+    return;
+  }
+
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;
