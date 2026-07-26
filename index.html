@@ -282,7 +282,7 @@ let state = {
   filterGroup: 'All', filterPattern: 'All', filterAttach: 'All', filterFav: false,
   searchQ: '',
   editRoutine: null, editProgram: null, editCustomEx: null,
-  workout: null, /* { routineId, mode, entries, current, sets[], durationStart, restTimer } */
+  workout: null, /* { routineId, mode, entries, checked[], current, durationStart, finished, feltLike } — mirrored to localStorage, see saveWorkout() */
   calDate: new Date(),
   logs: [], settings: {}
 };
@@ -358,7 +358,14 @@ async function init(){
       saveSettings({iosTipSeen:true});
     },3000);
   }
+  // Restore an in-progress workout that a reload/eviction interrupted
+  const resumed = loadSavedWorkout();
+  if(resumed){
+    state.workout = resumed;
+    state.view = 'workout';
+  }
   render();
+  if(resumed) showToast('Picked your workout back up where you left off');
 }
 
 function applyTheme(t){
@@ -443,7 +450,10 @@ function render(){
   n.querySelectorAll('.nav-btn').forEach(btn=>{
     btn.addEventListener('click',()=>nav(btn.dataset.view));
   });
-  if(state.view==='workout'){v.innerHTML=renderWorkoutView();bindWorkout();return;}
+  if(state.view==='workout'&&state.workout){
+    if(state.workout.finished){renderGuidedComplete();return;}
+    v.innerHTML=renderWorkoutView();bindWorkout();return;
+  }
   switch(state.view){
     case 'today': v.innerHTML=renderToday(); bindToday(); break;
     case 'calendar': v.innerHTML=renderCalendar(); bindCalendar(); break;
@@ -810,6 +820,20 @@ function bindLibrary(){
     });
   },{threshold:0.1});
   document.querySelectorAll('.ex-row video[data-src], .ex-row video[src]').forEach(v=>libObserver.observe(v));
+
+  // Paused videos still hold their decoded buffers. Scrolling the whole list
+  // otherwise pins ~85 clips in memory, which is what gets a PWA jetsammed on
+  // iOS — drop the source once a clip is well outside the viewport.
+  const libUnloader=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      const vid=entry.target;
+      if(!entry.isIntersecting && vid.src && vid.dataset.src){
+        vid.removeAttribute('src');
+        vid.load();
+      }
+    });
+  },{rootMargin:'600px'});
+  document.querySelectorAll('.ex-row video[data-src]').forEach(v=>libUnloader.observe(v));
 }
 
 function renderExDetail(id){
@@ -1547,10 +1571,46 @@ async function resetAll(){
   EXERCISES.length=0; baseEx.forEach(e=>EXERCISES.push(e));
   state.activeProgram=PROGRAMS[0]?.id||null;
   await dbPut('settings',{id:'main',theme:state.theme,activeProgram:state.activeProgram});
+  endWorkout();
   showToast('All data reset!');nav('today');
 }
 
 // ─── WORKOUT ─────────────────────────────────────────
+// iOS reclaims memory from backgrounded PWAs by killing the web content
+// process; coming back re-runs init() from scratch. Everything else lives in
+// IndexedDB, so only the active workout was lost. Mirror it into localStorage
+// (synchronous, so it survives a kill with no warning) and restore on boot.
+const WORKOUT_KEY='tiltboard-active-workout';
+const WORKOUT_MAX_AGE_MS=12*60*60*1000;
+
+function saveWorkout(){
+  try{
+    if(state.workout) localStorage.setItem(WORKOUT_KEY,JSON.stringify(state.workout));
+    else localStorage.removeItem(WORKOUT_KEY);
+  }catch(e){}
+}
+function loadSavedWorkout(){
+  let w=null;
+  try{
+    const raw=localStorage.getItem(WORKOUT_KEY);
+    if(!raw) return null;
+    w=JSON.parse(raw);
+  }catch(e){ w=null; }
+  const valid=w&&Array.isArray(w.entries)&&w.entries.length&&
+              typeof w.durationStart==='number'&&
+              Date.now()-w.durationStart<WORKOUT_MAX_AGE_MS;
+  if(!valid){ try{localStorage.removeItem(WORKOUT_KEY)}catch(e){} return null; }
+  if(!Array.isArray(w.checked)||w.checked.length!==w.entries.length)
+    w.checked=Array(w.entries.length).fill(false);
+  w.current=Math.min(Math.max(w.current|0,0),w.entries.length-1);
+  return w;
+}
+function endWorkout(){
+  clearInterval(_workoutTimer);
+  state.workout=null;
+  saveWorkout();
+}
+
 function startWorkout(routineId,mode){
   const r=ROUTINES.find(r=>r.id===routineId);
   if(!r) return;
@@ -1559,8 +1619,9 @@ function startWorkout(routineId,mode){
     entries:r.entries.map(e=>({...e,loggedSets:[]})),
     checked:Array(r.entries.length).fill(false),
     current:0,durationStart:Date.now(),
-    restTimer:null,restEnd:null,feltLike:2
+    finished:false,restEnd:null,feltLike:2
   };
+  saveWorkout();
   nav('workout');
 }
 
@@ -1668,8 +1729,7 @@ function bindWorkout(){
   };
   tick();
   _workoutTimer=setInterval(tick,1000);
-  const stopTimer=()=>clearInterval(_workoutTimer);
-  document.getElementById('quit-workout')?.addEventListener('click',()=>showConfirm('Quit workout?','Your progress will be lost.',()=>{stopTimer();state.workout=null;nav('today');}));
+  document.getElementById('quit-workout')?.addEventListener('click',()=>showConfirm('Quit workout?','Your progress will be lost.',()=>{endWorkout();nav('today');}));
   // Checkoff mode: checkbox toggles (targeted DOM update — no full re-render needed)
   document.querySelectorAll('[data-chk-btn]').forEach(el=>el.addEventListener('click',()=>{
     const i=parseInt(el.dataset.chkBtn);
@@ -1679,11 +1739,13 @@ function bindWorkout(){
     el.classList.toggle('checked',done);
     const row=document.querySelector(`[data-chk-row="${i}"]`);
     if(row) row.classList.toggle('checkoff-done',done);
+    saveWorkout();
   }));
   // Checkoff mode: felt picker (toggle active class without re-render)
   document.querySelectorAll('[data-felt]').forEach(el=>el.addEventListener('click',()=>{
     state.workout.feltLike=parseInt(el.dataset.felt);
     document.querySelectorAll('[data-felt]').forEach(b=>b.classList.toggle('active',b===el));
+    saveWorkout();
   }));
   // Checkoff mode: complete routine
   document.getElementById('complete-checkoff')?.addEventListener('click',async()=>{
@@ -1691,17 +1753,17 @@ function bindWorkout(){
     const durationSec=Math.round((Date.now()-w.durationStart)/1000);
     const log={date:todayStr(),routineId:w.routineId,routineName:w.routineName,mode:'checkoff',sets:[],durationSec,feltLike:w.feltLike||2};
     const id=await dbPut('logs',log);log.id=id;
-    state.logs.push(log);stopTimer();state.workout=null;showToast('Workout logged! 🎉');nav('today');
+    state.logs.push(log);endWorkout();showToast('Workout logged! 🎉');nav('today');
   });
   // Guided mode: advance step-by-step, show end screen when done
   document.getElementById('guided-next')?.addEventListener('click',()=>{
     const w=state.workout;
-    w.current++;
-    if(w.current>=w.entries.length) renderGuidedComplete();
-    else render();
+    if(w.current+1>=w.entries.length){ w.finished=true; saveWorkout(); renderGuidedComplete(); }
+    else { w.current++; saveWorkout(); render(); }
   });
   document.getElementById('guided-back')?.addEventListener('click',()=>{
     state.workout.current--;
+    saveWorkout();
     render();
   });
 }
@@ -1709,6 +1771,8 @@ function bindWorkout(){
 // ── Guided workout end screen (replaces entire #view content) ──
 function renderGuidedComplete(){
   const w=state.workout;
+  if(!w) return;
+  clearInterval(_workoutTimer);
   const feels=[['😊','Easy'],['💪','Medium'],['😤','Hard'],['🔥','Intense'],['🏆','PR Day!']];
   document.getElementById('view').innerHTML=`
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;padding:32px 24px">
@@ -1716,7 +1780,7 @@ function renderGuidedComplete(){
       <div style="font-size:26px;font-weight:800;font-family:var(--font-head);margin-bottom:6px">All Done!</div>
       <div style="color:var(--fg2);margin-bottom:28px;font-size:15px">${w.entries.length} exercise${w.entries.length!==1?'s':''} completed</div>
       <div style="font-size:14px;font-weight:600;color:var(--fg2);margin-bottom:10px">How did it feel?</div>
-      <div class="felt-row" style="width:100%;max-width:340px">${feels.map(([e,l],i)=>`<button class="felt-btn ${i===1?'active':''}" data-felt="${i+1}">${e}<br><small>${l}</small></button>`).join('')}</div>
+      <div class="felt-row" style="width:100%;max-width:340px">${feels.map(([e,l],i)=>`<button class="felt-btn ${(w.feltLike||2)===(i+1)?'active':''}" data-felt="${i+1}">${e}<br><small>${l}</small></button>`).join('')}</div>
       <div style="width:100%;max-width:340px;margin-top:24px">
         <button class="btn btn-primary" id="complete-routine">✓ Complete Routine</button>
         <button class="btn btn-secondary" id="quit-workout" style="margin-top:8px">Discard</button>
@@ -1725,14 +1789,15 @@ function renderGuidedComplete(){
   document.querySelectorAll('[data-felt]').forEach(el=>el.addEventListener('click',()=>{
     w.feltLike=parseInt(el.dataset.felt);
     document.querySelectorAll('[data-felt]').forEach(b=>b.classList.toggle('active',b===el));
+    saveWorkout();
   }));
   document.getElementById('complete-routine')?.addEventListener('click',async()=>{
     const durationSec=Math.round((Date.now()-w.durationStart)/1000);
     const log={date:todayStr(),routineId:w.routineId,routineName:w.routineName,mode:'guided',sets:[],durationSec,feltLike:w.feltLike||2};
     const id=await dbPut('logs',log);log.id=id;
-    state.logs.push(log);clearInterval(_workoutTimer);state.workout=null;showToast('Workout logged! 🎉');nav('today');
+    state.logs.push(log);endWorkout();showToast('Workout logged! 🎉');nav('today');
   });
-  document.getElementById('quit-workout')?.addEventListener('click',()=>showConfirm('Discard workout?','Progress will not be saved.',()=>{clearInterval(_workoutTimer);state.workout=null;nav('today');}));
+  document.getElementById('quit-workout')?.addEventListener('click',()=>showConfirm('Discard workout?','Progress will not be saved.',()=>{endWorkout();nav('today');}));
 }
 
 
@@ -1779,6 +1844,13 @@ function showToast(msg){
 
 // ─── Bootstrap ───────────────────────────────────────
 document.addEventListener('DOMContentLoaded',init);
+
+// Last chance to flush the active workout — on iOS a backgrounded PWA can be
+// killed without any further events, and pagehide may be all we get.
+window.addEventListener('pagehide',()=>{ if(state.workout) saveWorkout(); });
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='hidden'){ if(state.workout) saveWorkout(); }
+});
 
 // Safety net: a scrolled body misplaces the bottom bar after rotating on iOS.
 window.addEventListener('resize',()=>window.scrollTo(0,0));
