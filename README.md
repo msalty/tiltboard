@@ -21,10 +21,13 @@ Not sure where to start? Choose from built-in weekly programs — beginner three
 You choose how much detail you want:
 
 - **Quick check-off** — Tap to log that you worked out today. That's it. Takes three seconds.
-- **Guided mode** — Walk through your routine step by step. Log your reps, incline level, and rest between sets with a built-in timer (your phone will even vibrate when rest time is up).
+- **Guided mode** — Walk through your routine step by step. Log the reps, incline, and added load you actually did on every set, with a rest timer that starts itself the moment you log one. When rest is up your phone buzzes (or chimes, on iPhones — iOS doesn't let web apps vibrate). Next time you hit that exercise, Tiltboard shows you what you did last time, so you know what to beat.
+
+### See Your Progress
+Every exercise keeps its own history. Open any exercise to see the reps and incline you've used over time, so you can tell at a glance whether you're actually moving forward.
 
 ### Stay Motivated with Streaks
-Tiltboard tracks how many weeks in a row you've hit your workout goal. Hit your target workouts this week? Your streak lives. The goal isn't perfection — it's consistency. The app shows your current streak, your all-time best, and a full year of workout history at a glance so you can see how far you've come.
+Tiltboard tracks how many weeks in a row you've hit your workout goal. Hit your target number of workout *days* this week? Your streak lives. The goal isn't perfection — it's consistency. The app shows your current streak, your all-time best, and a full year of workout history at a glance so you can see how far you've come.
 
 ### Visual Themes
 Choose the look that fits your vibe: dark gym style, clean light mode, warm journal feel, or auto (follows your phone's settings).

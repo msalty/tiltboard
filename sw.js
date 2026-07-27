@@ -1,4 +1,6 @@
-const CACHE = 'tiltboard-v9';
+const CACHE = 'tiltboard-v10';
+
+// The shell is small and mandatory: cached with addAll so a failure is loud.
 const SHELL = [
   './',
   'index.html',
@@ -11,7 +13,14 @@ const SHELL = [
   'icons/web-app-manifest-512x512.png',
   'data/exercises.json',
   'data/routines.json',
-  'data/programs.json',
+  'data/programs.json'
+];
+
+// ~31 MB of exercise clips. These are cached one at a time and best-effort:
+// addAll is atomic, so a single 404 or dropped connection used to reject the
+// whole install and leave the user with NO offline support at all — silently.
+// Anything missed here is still picked up by the runtime cache on first view.
+const MEDIA = [
   'images/sliding-board/back-fly-with-leg-curl.webm',
   'images/sliding-board/back-fly.webm',
   'images/sliding-board/biceps-curl-with-crunching.webm',
@@ -93,9 +102,16 @@ const SHELL = [
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())
-  );
+  e.waitUntil((async () => {
+    const c = await caches.open(CACHE);
+    // Shell must land in full — if this throws, the install correctly fails.
+    await c.addAll(SHELL);
+    await self.skipWaiting();
+    // Media warms in the background. Individually caught so one bad response
+    // can't take the rest down, and awaited only loosely — the app is already
+    // usable while this finishes.
+    await Promise.allSettled(MEDIA.map(url => c.add(url)));
+  })());
 });
 
 self.addEventListener('activate', e => {
