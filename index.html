@@ -123,7 +123,11 @@ button{-webkit-appearance:none;appearance:none}
 .btn-primary{background:var(--accent);color:var(--accent-fg);width:100%}
 .btn-secondary{background:var(--bg3);color:var(--fg);width:100%}
 .btn-ghost{background:none;color:var(--accent);padding:8px 12px;font-size:15px}
-.btn-danger{background:var(--red);color:#fff}
+.btn-danger{background:var(--red);color:#fff;width:100%}
+/* Destructive, but rare and not the action the user is most likely to want.
+   Reads as an escape hatch rather than competing with the primary button. */
+.btn-danger-quiet{background:none;color:var(--red);width:100%;font-weight:600}
+.modal-sheet .sheet-sep{border:none;border-top:1px solid var(--border);margin:14px 0 10px}
 .btn-sm{padding:8px 14px;font-size:14px;border-radius:var(--radius-xs)}
 
 /* ===== INPUTS ===== */
@@ -237,7 +241,9 @@ select option{background:var(--bg2)}
 @keyframes slideup{from{transform:translateY(100%)}to{transform:translateY(0)}}
 
 /* ===== TOAST ===== */
-#toast{position:fixed;bottom:calc(var(--nav-h) + var(--safe-b) + 12px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg3);color:var(--fg);padding:10px 20px;border-radius:20px;font-size:14px;font-weight:500;z-index:300;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;white-space:nowrap;border:1px solid var(--border)}
+/* Below .modal-backdrop (200): a toast reports an action that already
+   finished, so it must never cover the controls of a live dialog. */
+#toast{position:fixed;bottom:calc(var(--nav-h) + var(--safe-b) + 12px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg3);color:var(--fg);padding:10px 20px;border-radius:20px;font-size:14px;font-weight:500;z-index:150;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;white-space:nowrap;border:1px solid var(--border)}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* ===== MISC ===== */
@@ -2341,14 +2347,18 @@ function confirmQuitWorkout(){
     return;
   }
   closeModal();
+  const exCount=w.entries.filter(e=>e.loggedSets?.length).length;
   const backdrop=document.createElement('div');
   backdrop.className='modal-backdrop';backdrop.id='modal-backdrop';
+  // The two safe options sit together, so a mis-tap between them costs
+  // nothing; discarding is below a divider and deliberately quiet.
   backdrop.innerHTML=`<div class="modal-sheet">
     <div class="modal-title">End workout?</div>
-    <p style="color:var(--fg2);font-size:14px;margin-bottom:16px;text-align:center">You've logged ${n} set${n!==1?'s':''}. Save them as a workout, or throw them away?</p>
+    <p style="color:var(--fg2);font-size:14px;margin-bottom:18px;text-align:center">You've logged ${n} set${n!==1?'s':''} across ${exCount} exercise${exCount!==1?'s':''}.</p>
     <button class="btn btn-primary" id="quit-save" style="margin-bottom:8px">Save what I did</button>
-    <button class="btn btn-danger" id="quit-discard" style="margin-bottom:8px">Discard</button>
     <button class="btn btn-secondary" id="quit-cancel">Keep going</button>
+    <hr class="sheet-sep">
+    <button class="btn btn-danger-quiet" id="quit-discard">Discard ${n} set${n!==1?'s':''}</button>
   </div>`;
   backdrop.addEventListener('click',e=>{if(e.target===backdrop)closeModal();});
   document.body.appendChild(backdrop);
@@ -2383,7 +2393,7 @@ function renderGuidedComplete(){
       <div class="felt-row" style="width:100%;max-width:340px">${feels.map(([e,l],i)=>`<button class="felt-btn ${(w.feltLike||2)===(i+1)?'active':''}" data-felt="${i+1}">${e}<br><small>${l}</small></button>`).join('')}</div>
       <div style="width:100%;max-width:340px;margin-top:24px">
         <button class="btn btn-primary" id="complete-routine">✓ Complete Routine</button>
-        <button class="btn btn-secondary" id="discard-routine" style="margin-top:8px">Discard</button>
+        <button class="btn btn-danger-quiet" id="discard-routine" style="margin-top:6px">Discard workout</button>
       </div>
     </div>`;
   document.querySelectorAll('[data-felt]').forEach(el=>el.addEventListener('click',()=>{
