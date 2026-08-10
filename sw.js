@@ -7,7 +7,7 @@
 // any web server.
 const CACHE_PREFIX = 'tiltboard';
 const CACHE_SEP = '::';
-const CACHE_VERSION = 'v10';
+const CACHE_VERSION = 'v11';
 
 // self.location is the sw.js URL, so './' is this copy's install directory:
 // https://host/tiltboard/ when deployed to a subdirectory, https://host/ at a
@@ -28,7 +28,7 @@ function isOwnCache(name) {
 }
 
 // Caches written by releases that predated this namespace ('tiltboard-v1' …
-// 'tiltboard-v9'). They no longer match isOwnCache(), so sweep them by their
+// 'tiltboard-v10'). They no longer match isOwnCache(), so sweep them by their
 // own historical pattern or they leak on the origin forever.
 const LEGACY_CACHE_RE = /^tiltboard-v\d+$/;
 
@@ -39,6 +39,7 @@ function inScope(url) {
   return url.origin === APP_SCOPE.origin && url.pathname.startsWith(APP_BASE);
 }
 
+// The shell is small and mandatory: cached with addAll so a failure is loud.
 const SHELL = [
   './',
   'index.html',
@@ -51,7 +52,14 @@ const SHELL = [
   'icons/web-app-manifest-512x512.png',
   'data/exercises.json',
   'data/routines.json',
-  'data/programs.json',
+  'data/programs.json'
+];
+
+// ~31 MB of exercise clips. These are cached one at a time and best-effort:
+// addAll is atomic, so a single 404 or dropped connection used to reject the
+// whole install and leave the user with NO offline support at all — silently.
+// Anything missed here is still picked up by the runtime cache on first view.
+const MEDIA = [
   'images/sliding-board/back-fly-with-leg-curl.webm',
   'images/sliding-board/back-fly.webm',
   'images/sliding-board/biceps-curl-with-crunching.webm',
@@ -133,9 +141,16 @@ const SHELL = [
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())
-  );
+  e.waitUntil((async () => {
+    const c = await caches.open(CACHE);
+    // Shell must land in full — if this throws, the install correctly fails.
+    await c.addAll(SHELL);
+    await self.skipWaiting();
+    // Media warms in the background. Individually caught so one bad response
+    // can't take the rest down, and awaited only loosely — the app is already
+    // usable while this finishes.
+    await Promise.allSettled(MEDIA.map(url => c.add(url)));
+  })());
 });
 
 self.addEventListener('activate', e => {
