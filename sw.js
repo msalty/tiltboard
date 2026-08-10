@@ -1,4 +1,44 @@
-const CACHE = 'tiltboard-v9';
+// ─── Install namespace ───────────────────────────────
+// Nearly every storage API a service worker can reach — CacheStorage above
+// all — is keyed by ORIGIN, not by scope. This app shares its origin with
+// other PWAs in sibling directories, so anything global here stomps the
+// neighbours. Derive the namespace at runtime from where this copy actually
+// sits; never hardcode a path, so the app stays portable to any directory on
+// any web server.
+const CACHE_PREFIX = 'tiltboard';
+const CACHE_SEP = '::';
+const CACHE_VERSION = 'v10';
+
+// self.location is the sw.js URL, so './' is this copy's install directory:
+// https://host/tiltboard/ when deployed to a subdirectory, https://host/ at a
+// domain root. The page-side equivalent is new URL('./', document.baseURI).
+const APP_SCOPE = new URL('./', self.location);
+const APP_BASE = APP_SCOPE.pathname;
+
+// The base path is delimited on BOTH sides, and isOwnCache() compares that
+// middle segment for equality rather than prefix-matching the whole name.
+// A root install's base ('/') is a string prefix of a subdirectory install's
+// ('/tiltboard/'), so a startsWith() filter would let a root copy claim — and
+// delete — a subdirectory copy's caches. Exact segment equality can't.
+const CACHE = CACHE_PREFIX + CACHE_SEP + APP_BASE + CACHE_SEP + CACHE_VERSION;
+
+function isOwnCache(name) {
+  const parts = name.split(CACHE_SEP);
+  return parts.length === 3 && parts[0] === CACHE_PREFIX && parts[1] === APP_BASE;
+}
+
+// Caches written by releases that predated this namespace ('tiltboard-v1' …
+// 'tiltboard-v9'). They no longer match isOwnCache(), so sweep them by their
+// own historical pattern or they leak on the origin forever.
+const LEGACY_CACHE_RE = /^tiltboard-v\d+$/;
+
+// A same-origin request outside this copy's directory belongs to a
+// neighbouring app: never answer it, never take a copy of it. APP_BASE always
+// ends in '/', so '/tiltboardx/foo' can't pass for '/tiltboard/'.
+function inScope(url) {
+  return url.origin === APP_SCOPE.origin && url.pathname.startsWith(APP_BASE);
+}
+
 const SHELL = [
   './',
   'index.html',
@@ -100,8 +140,14 @@ self.addEventListener('install', e => {
 
 self.addEventListener('activate', e => {
   e.waitUntil(
+    // caches.keys() lists every cache on the ORIGIN, including neighbouring
+    // apps'. Only ever delete our own — this copy's namespace, plus the
+    // legacy un-namespaced names this app itself used to write.
     caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+      Promise.all(
+        keys.filter(k => k !== CACHE && (isOwnCache(k) || LEGACY_CACHE_RE.test(k)))
+            .map(k => caches.delete(k))
+      )
     ).then(() => self.clients.claim())
   );
 });
@@ -109,10 +155,19 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
 
+  // Anything outside this copy's directory (a neighbouring app on the shared
+  // origin, or a cross-origin asset) is none of our business. Declining to
+  // call respondWith() lets the browser handle it normally.
+  const url = new URL(e.request.url);
+  if (!inScope(url)) return;
+
+  // Every lookup below goes through caches.open(CACHE) rather than the global
+  // caches.match(), which answers from the FIRST cache on the origin holding
+  // the URL — potentially a neighbour's copy of a same-named file.
+
   // Network-first for the app shell so a UI change can't get stuck behind a
   // stale cache entry. Falls back to cache when offline.
-  const isShell = e.request.mode === 'navigate' ||
-                  new URL(e.request.url).pathname.endsWith('/index.html');
+  const isShell = e.request.mode === 'navigate' || url.pathname.endsWith('/index.html');
   if (isShell) {
     e.respondWith(
       fetch(e.request).then(res => {
@@ -121,21 +176,20 @@ self.addEventListener('fetch', e => {
           caches.open(CACHE).then(c => c.put(e.request, clone));
         }
         return res;
-      }).catch(() => caches.match(e.request).then(c => c || caches.match('index.html')))
+      }).catch(() => caches.open(CACHE).then(c =>
+        c.match(e.request).then(hit => hit || c.match(new URL('index.html', self.location).href))
+      ))
     );
     return;
   }
 
   e.respondWith(
-    caches.match(e.request).then(cached => {
+    caches.open(CACHE).then(c => c.match(e.request).then(cached => {
       if (cached) return cached;
       return fetch(e.request).then(res => {
-        if (res.ok) {
-          const clone = res.clone();
-          caches.open(CACHE).then(c => c.put(e.request, clone));
-        }
+        if (res.ok) c.put(e.request, res.clone());
         return res;
       }).catch(() => cached);
-    })
+    }))
   );
 });

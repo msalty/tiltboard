@@ -349,7 +349,9 @@ async function init(){
   state.activeProgram = settings.activeProgram || (PROGRAMS[0]?.id ?? null);
   applyTheme(state.theme);
   // Service worker
-  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  // Both paths are relative, so the worker registers at this copy's own
+  // directory and claims scope over it alone — never the whole origin.
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js',{scope:'./'}).catch(()=>{});
   // iOS install tip
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !navigator.standalone;
   if(isIOS && !settings.iosTipSeen){
@@ -1544,15 +1546,44 @@ async function importData(file){
   }catch(err){showToast('Import failed: '+err.message);}
 }
 
+// ─── Install namespace ───────────────────────────────
+// Service workers and CacheStorage are keyed by ORIGIN, not by scope, and this
+// app shares its origin with sibling PWAs. Derive this copy's namespace at
+// runtime from where it's actually installed so nothing below can reach a
+// neighbour's storage — and so the app stays portable to any directory on any
+// web server. document.baseURI is the page-side twin of the service worker's
+// new URL('./', self.location): both resolve to the app's own directory
+// whether it loads as /app/, /app/index.html, a nested path, or a domain root.
+const APP_BASE = new URL('./', document.baseURI).pathname;
+const CACHE_PREFIX='tiltboard', CACHE_SEP='::';
+// Must stay in sync with isOwnCache() in sw.js. Compares the delimited base
+// segment for equality, not by prefix: a root install's base ('/') is a string
+// prefix of a subdirectory install's ('/tiltboard/'), so prefix matching would
+// let a root copy delete a subdirectory copy's caches.
+function isOwnCache(name){
+  const parts=name.split(CACHE_SEP);
+  return parts.length===3 && parts[0]===CACHE_PREFIX && parts[1]===APP_BASE;
+}
+// Un-namespaced names this app itself wrote before the scheme above.
+const LEGACY_CACHE_RE=/^tiltboard-v\d+$/;
+
 async function forceReload(){
   try{
     if('serviceWorker' in navigator){
-      const regs=await navigator.serviceWorker.getRegistrations();
-      await Promise.all(regs.map(r=>r.unregister()));
+      // NOT getRegistrations(): that returns every registration on the origin,
+      // so unregistering the list would uninstall the neighbouring apps'
+      // service workers. getRegistration() with no argument returns only the
+      // one whose scope covers this page.
+      const reg=await navigator.serviceWorker.getRegistration();
+      if(reg) await reg.unregister();
     }
     if('caches' in window){
+      // Likewise, caches.keys() lists the whole origin. Delete only this
+      // copy's caches and the legacy names this app used to write.
       const keys=await caches.keys();
-      await Promise.all(keys.map(k=>caches.delete(k)));
+      await Promise.all(
+        keys.filter(k=>isOwnCache(k)||LEGACY_CACHE_RE.test(k)).map(k=>caches.delete(k))
+      );
     }
   }catch(e){console.warn('Cache clear error:',e);}
   location.reload(true);
