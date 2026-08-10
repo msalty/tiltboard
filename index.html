@@ -98,6 +98,10 @@ html,body{background:var(--bg2);margin:0;padding:0}
   /* Pill is out of flow — keep the last row clear of it */
   #view{padding-bottom:calc(var(--nav-h) + max(12px, env(safe-area-inset-bottom, 0px)) + 20px)}
   #toast{bottom:calc(var(--nav-h) + max(12px, env(safe-area-inset-bottom, 0px)) + 14px)}
+  /* A workout hides the pill, so that reservation would just be dead space
+     between the controls and the bottom of the screen. */
+  #app.in-workout #view{padding-bottom:var(--safe-b)}
+  #app.in-workout #toast{bottom:calc(var(--safe-b) + 20px)}
 }
 
 /* ===== HEADER ===== */
@@ -119,7 +123,11 @@ button{-webkit-appearance:none;appearance:none}
 .btn-primary{background:var(--accent);color:var(--accent-fg);width:100%}
 .btn-secondary{background:var(--bg3);color:var(--fg);width:100%}
 .btn-ghost{background:none;color:var(--accent);padding:8px 12px;font-size:15px}
-.btn-danger{background:var(--red);color:#fff}
+.btn-danger{background:var(--red);color:#fff;width:100%}
+/* Destructive, but rare and not the action the user is most likely to want.
+   Reads as an escape hatch rather than competing with the primary button. */
+.btn-danger-quiet{background:none;color:var(--red);width:100%;font-weight:600}
+.modal-sheet .sheet-sep{border:none;border-top:1px solid var(--border);margin:14px 0 10px}
 .btn-sm{padding:8px 14px;font-size:14px;border-radius:var(--radius-xs)}
 
 /* ===== INPUTS ===== */
@@ -188,6 +196,43 @@ select option{background:var(--bg2)}
 .progress-bar{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin:8px 0}
 .progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .3s}
 
+/* ===== GUIDED: PER-SET LOGGING ===== */
+/* Rest banner sits above the controls rather than covering the screen — during
+   rest you often want to read the next exercise's cues. */
+.rest-banner{display:none;align-items:center;gap:8px;background:var(--accent-dim);color:var(--accent);border-radius:var(--radius-sm);padding:7px 10px;margin-bottom:8px;font-size:14px;font-weight:700}
+.rest-banner.on{display:flex}
+.rest-banner.done{background:var(--green);color:#fff}
+.rest-banner .rest-lbl{flex:1}
+/* Tinted from currentColor rather than a fixed white — accent-dim is nearly
+   white in the light and warm themes, where a translucent white would vanish. */
+.rest-banner button{background:color-mix(in srgb, currentColor 14%, transparent);border:1px solid color-mix(in srgb, currentColor 30%, transparent);color:inherit;font:inherit;font-size:13px;font-weight:700;padding:5px 10px;border-radius:var(--radius-xs);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.set-pills{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.set-pill{flex:1;min-width:48px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px 4px 5px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.set-pill .sp-n{font-size:10px;color:var(--fg3);text-transform:uppercase;letter-spacing:.4px;font-weight:700}
+.set-pill .sp-v{font-size:15px;font-weight:700;margin-top:1px}
+.set-pill.logged{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.set-pill.logged .sp-n{color:var(--accent)}
+.set-pill.active{border-color:var(--accent);border-width:2px}
+.set-pill.editing{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.set-pill.editing .sp-n{color:var(--accent-fg)}
+.stepper-row{display:flex;gap:8px;margin-bottom:8px}
+.stepper{flex:1;min-width:0;background:var(--bg3);border-radius:var(--radius-sm);padding:4px 6px 5px}
+.stepper .st-lbl{font-size:10px;color:var(--fg3);text-transform:uppercase;letter-spacing:.4px;font-weight:700;text-align:center}
+.stepper .st-ctl{display:flex;align-items:center;justify-content:space-between;gap:2px;margin-top:1px}
+.stepper button{width:32px;height:32px;border-radius:50%;border:none;background:var(--bg2);color:var(--fg);font-size:18px;font-weight:700;line-height:1;cursor:pointer;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.stepper button:active{background:var(--accent);color:#fff}
+.stepper .st-val{font-size:18px;font-weight:800;font-family:var(--font-head);min-width:26px;text-align:center}
+.wk-actions{display:flex;gap:8px;margin-top:8px}
+.wk-actions .btn{padding:11px 14px;font-size:15px}
+#wk-footer .btn-primary{padding:13px}
+.last-time{background:var(--bg2);border-radius:var(--radius);padding:10px 13px;margin-bottom:12px;border-left:3px solid var(--accent)}
+.last-time .lt-hd{font-size:11px;color:var(--fg3);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:3px}
+.last-time .lt-v{font-size:15px;font-weight:700}
+.hist-row{display:flex;align-items:baseline;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border)}
+.hist-row:last-child{border-bottom:none}
+.hist-date{font-size:12px;color:var(--fg3);flex-shrink:0;min-width:74px}
+.hist-sets{font-size:14px;font-weight:600}
+
 /* ===== MODAL ===== */
 .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;animation:fadein .15s}
 .modal-sheet{background:var(--bg2);border-radius:var(--radius) var(--radius) 0 0;padding:20px 20px calc(20px + var(--safe-b));max-height:80vh;overflow-y:auto;width:100%;animation:slideup .2s}
@@ -196,7 +241,9 @@ select option{background:var(--bg2)}
 @keyframes slideup{from{transform:translateY(100%)}to{transform:translateY(0)}}
 
 /* ===== TOAST ===== */
-#toast{position:fixed;bottom:calc(var(--nav-h) + var(--safe-b) + 12px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg3);color:var(--fg);padding:10px 20px;border-radius:20px;font-size:14px;font-weight:500;z-index:300;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;white-space:nowrap;border:1px solid var(--border)}
+/* Below .modal-backdrop (200): a toast reports an action that already
+   finished, so it must never cover the controls of a live dialog. */
+#toast{position:fixed;bottom:calc(var(--nav-h) + var(--safe-b) + 12px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg3);color:var(--fg);padding:10px 20px;border-radius:20px;font-size:14px;font-weight:500;z-index:150;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;white-space:nowrap;border:1px solid var(--border)}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* ===== MISC ===== */
@@ -286,6 +333,16 @@ let state = {
   calDate: new Date(),
   logs: [], settings: {}
 };
+
+// Everything the user can type — and everything that can arrive in an imported
+// backup — goes through here before it reaches innerHTML. Sharing routines and
+// custom exercises as JSON is a headline feature, so an imported string is
+// untrusted input, not our own data.
+const ESC_MAP={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
+function esc(v){
+  if(v==null) return '';
+  return String(v).replace(/[&<>"']/g,c=>ESC_MAP[c]);
+}
 
 function nav(view, subview=null, subId=null){
   // If entering workout, don't push regular nav
@@ -387,9 +444,16 @@ function todayStr(){return dateStr(new Date())}
 
 function computeStreaks(logs,weeklyTarget){
   if(!weeklyTarget||weeklyTarget<1) weeklyTarget=1;
-  // Group logs by week
+  // Group by week, counting DISTINCT DAYS — three logs on one Monday is one
+  // day of training, not three, and must not satisfy a 3x/week target.
+  const daysByWeek={};
+  logs.forEach(l=>{
+    if(!l.date) return;
+    const wk=weekKey(new Date(l.date+'T12:00:00'));
+    (daysByWeek[wk]||(daysByWeek[wk]=new Set())).add(l.date);
+  });
   const byWeek={};
-  logs.forEach(l=>{if(l.date){const wk=weekKey(new Date(l.date+'T12:00:00'));byWeek[wk]=(byWeek[wk]||0)+1}});
+  Object.keys(daysByWeek).forEach(wk=>{byWeek[wk]=daysByWeek[wk].size});
   // Build sorted list of completed weeks
   const allWeeks=Object.keys(byWeek).sort();
   if(!allWeeks.length) return {current:0,best:0};
@@ -424,7 +488,12 @@ function computeStreaks(logs,weeklyTarget){
 
 function thisWeekWorkouts(){
   const wk=weekKey(new Date());
-  return state.logs.filter(l=>l.date&&weekKey(new Date(l.date+'T12:00:00'))===wk).length;
+  // Distinct days, to match computeStreaks — see the note there.
+  const days=new Set();
+  state.logs.forEach(l=>{
+    if(l.date&&weekKey(new Date(l.date+'T12:00:00'))===wk) days.add(l.date);
+  });
+  return days.size;
 }
 
 function todayLog(){return state.logs.find(l=>l.date===todayStr())}
@@ -451,9 +520,15 @@ function render(){
     btn.addEventListener('click',()=>nav(btn.dataset.view));
   });
   if(state.view==='workout'&&state.workout){
+    // The mobile nav is a floating pill, so it sits on top of the workout
+    // footer's controls. A workout has its own Quit button — hide the pill.
+    n.style.display='none';
+    document.getElementById('app')?.classList.add('in-workout');
     if(state.workout.finished){renderGuidedComplete();return;}
     v.innerHTML=renderWorkoutView();bindWorkout();return;
   }
+  n.style.display='';
+  document.getElementById('app')?.classList.remove('in-workout');
   switch(state.view){
     case 'today': v.innerHTML=renderToday(); bindToday(); break;
     case 'calendar': v.innerHTML=renderCalendar(); bindCalendar(); break;
@@ -541,8 +616,8 @@ function renderToday(){
     ${routine ? `
     <div class="card">
       <div style="font-size:13px;color:var(--fg2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Today's Workout</div>
-      <div style="font-size:20px;font-weight:700;font-family:var(--font-head);margin-bottom:4px">${routine.name}</div>
-      <div style="font-size:14px;color:var(--fg2);margin-bottom:14px">${routine.entries.length} exercises · ${routine.description||''}</div>
+      <div style="font-size:20px;font-weight:700;font-family:var(--font-head);margin-bottom:4px">${esc(routine.name)}</div>
+      <div style="font-size:14px;color:var(--fg2);margin-bottom:14px">${routine.entries.length} exercises · ${esc(routine.description)}</div>
       ${done ? `<div style="background:var(--green);color:#fff;border-radius:var(--radius-sm);padding:12px;text-align:center;font-weight:600">✓ Completed today!</div>` : `
       <button class="btn btn-primary" id="start-guided" data-rid="${routine.id}">Start Guided Workout</button>
       <button class="btn btn-secondary" id="start-checkoff" data-rid="${routine.id}" style="margin-top:8px">Quick Check-Off</button>
@@ -567,9 +642,9 @@ function renderLogRow(l){
     <div class="swipe-del" aria-label="Delete workout">🗑<span>Delete</span></div>
     <div class="swipe-content log-entry" style="display:flex;align-items:center">
       <div style="flex:1;min-width:0">
-        <div class="log-date">${l.date} · ${l.mode==='guided'?'Guided':'Check-off'} ${l.feltLike?feels[l.feltLike]:''}</div>
-        <div class="log-name">${r?.name||l.routineName||'Workout'}</div>
-        <div class="log-detail">${l.mode==='guided'&&l.sets?.length?l.sets.length+' sets logged':l.durationSec?formatDur(l.durationSec):''}</div>
+        <div class="log-date">${esc(l.date)} · ${l.mode==='guided'?'Guided':'Check-off'} ${l.feltLike?feels[l.feltLike]:''}</div>
+        <div class="log-name">${esc(r?.name||l.routineName||'Workout')}</div>
+        <div class="log-detail">${[l.sets?.length?l.sets.length+' sets':'',l.durationSec?formatDur(l.durationSec):''].filter(Boolean).join(' · ')}</div>
       </div>
       <button class="log-del-btn" data-logid="${l.id}" aria-label="Delete workout">🗑</button>
     </div>
@@ -727,9 +802,9 @@ function bindCalendar(){
 function showDayModal(ds,logs){
   const content=logs.map(l=>{
     const r=ROUTINES.find(r=>r.id===l.routineId);
-    return `<div class="log-entry"><div class="log-name">${r?.name||'Workout'}</div><div class="log-detail">${l.mode==='guided'?'Guided':'Check-off'}${l.durationSec?' · '+formatDur(l.durationSec):''}</div></div>`;
+    return `<div class="log-entry"><div class="log-name">${esc(r?.name||l.routineName||'Workout')}</div><div class="log-detail">${l.mode==='guided'?'Guided':'Check-off'}${l.durationSec?' · '+formatDur(l.durationSec):''}${l.sets?.length?' · '+l.sets.length+' sets':''}</div></div>`;
   }).join('');
-  showModal(`Workouts on ${ds}`,`<div class="card-section">${content}</div>`);
+  showModal(`Workouts on ${esc(ds)}`,`<div class="card-section">${content}</div>`);
 }
 
 // ─── LIBRARY ─────────────────────────────────────────
@@ -742,10 +817,10 @@ function exMediaEl(ex,cls,style,lazy){
   const c=cls?` class="${cls}"`:'';
   const s=style?` style="${style}"`:'';
   if(ex.videoFile){
-    if(lazy) return `<video${c}${s} data-src="${ex.videoFile}" muted loop playsinline preload="none"></video>`;
-    return `<video${c}${s} src="${ex.videoFile}" autoplay muted loop playsinline></video>`;
+    if(lazy) return `<video${c}${s} data-src="${esc(ex.videoFile)}" muted loop playsinline preload="none"></video>`;
+    return `<video${c}${s} src="${esc(ex.videoFile)}" autoplay muted loop playsinline></video>`;
   }
-  if(ex.gifFile) return `<img${c}${s} src="${ex.gifFile}" alt="${ex.name||''}" loading="lazy">`;
+  if(ex.gifFile) return `<img${c}${s} src="${esc(ex.gifFile)}" alt="${esc(ex.name)}" loading="lazy">`;
   return null;
 }
 
@@ -759,13 +834,13 @@ function renderLibrary(){
   const groupChips=GROUPS.map(g=>`<button class="chip ${state.filterGroup===g?'active':''}" data-grp="${g}">${g}</button>`).join('');
   const patChips=PATTERNS.map(p=>`<button class="chip ${state.filterPattern===p?'active':''}" data-pat="${p}">${p==='All'?'All Patterns':p}</button>`).join('');
   const rows=exs.map(e=>`
-    <div class="ex-row" data-exid="${e.id}">
+    <div class="ex-row" data-exid="${esc(e.id)}">
       ${exMediaEl(e,'ex-gif',null,true)||`<div class="ex-gif" style="background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🏋️</div>`}
       <div class="ex-info">
-        <div class="ex-name">${e.name}${e.isCustom?'<span class="custom-badge">custom</span>':''}</div>
-        <div class="ex-meta">${e.muscleGroup} · ${e.movementPattern}</div>
+        <div class="ex-name">${esc(e.name)}${e.isCustom?'<span class="custom-badge">custom</span>':''}</div>
+        <div class="ex-meta">${esc(e.muscleGroup)} · ${esc(e.movementPattern)}</div>
       </div>
-      <button class="ex-fav ${e.favorite?'on':''}" data-fav="${e.id}" aria-label="Favorite">★</button>
+      <button class="ex-fav ${e.favorite?'on':''}" data-fav="${esc(e.id)}" aria-label="Favorite">★</button>
     </div>`).join('');
   return `
   <div class="page-header">
@@ -779,7 +854,7 @@ function renderLibrary(){
   </div>
   <div class="search-bar">
     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input type="search" id="lib-search" placeholder="Search exercises…" value="${state.searchQ}" autocomplete="off">
+    <input type="search" id="lib-search" placeholder="Search exercises…" value="${esc(state.searchQ)}" autocomplete="off">
   </div>
   <div class="chip-row" id="group-chips">${groupChips}</div>
   <div class="chip-row" id="pat-chips">${patChips}</div>
@@ -839,7 +914,7 @@ function bindLibrary(){
 function renderExDetail(id){
   const ex=EXERCISES.find(e=>e.id===id);
   if(!ex) return '<div class="empty-state"><p>Exercise not found.</p></div>';
-  const cues=ex.formCues?.length?ex.formCues.map((c,i)=>`<div class="cue-item"><div class="cue-num">${i+1}</div><div>${c}</div></div>`).join(''):'<div style="color:var(--fg3);font-size:14px;padding:8px 0">No form cues added.</div>';
+  const cues=ex.formCues?.length?ex.formCues.map((c,i)=>`<div class="cue-item"><div class="cue-num">${i+1}</div><div>${esc(c)}</div></div>`).join(''):'<div style="color:var(--fg3);font-size:14px;padding:8px 0">No form cues added.</div>';
   const gifHtml=(ex.videoFile||ex.gifFile)
     ?`<div style="background:var(--bg3);border-radius:var(--radius) var(--radius) 0 0;overflow:hidden">${exMediaEl(ex,'detail-gif')}</div>`
     :`<div style="height:120px;background:var(--bg3);border-radius:var(--radius) var(--radius) 0 0;display:flex;align-items:center;justify-content:center;font-size:48px">🏋️</div>`;
@@ -851,17 +926,33 @@ function renderExDetail(id){
       ${ex.isCustom?`<button class="back-btn" id="ex-edit-btn" style="color:var(--accent)">Edit ✎</button>`:''}
     </div>
     <div style="margin-top:8px;display:flex;align-items:flex-start;justify-content:space-between">
-      <div style="font-size:24px;font-weight:800;font-family:var(--font-head);flex:1">${ex.name}${ex.isCustom?'<span class="custom-badge">custom</span>':''}</div>
-      <button class="ex-fav ${ex.favorite?'on':''}" data-fav="${ex.id}" style="font-size:24px">★</button>
+      <div style="font-size:24px;font-weight:800;font-family:var(--font-head);flex:1">${esc(ex.name)}${ex.isCustom?'<span class="custom-badge">custom</span>':''}</div>
+      <button class="ex-fav ${ex.favorite?'on':''}" data-fav="${esc(ex.id)}" style="font-size:24px">★</button>
     </div>
     <div style="margin:8px 0 16px">
-      <span class="tag">${ex.muscleGroup}</span>
-      <span class="tag">${ex.movementPattern}</span>
-      ${ex.attachment&&ex.attachment!=='none'?`<span class="tag">${ex.attachment}</span>`:''}
+      <span class="tag">${esc(ex.muscleGroup)}</span>
+      <span class="tag">${esc(ex.movementPattern)}</span>
+      ${ex.attachment&&ex.attachment!=='none'?`<span class="tag">${esc(ex.attachment)}</span>`:''}
     </div>
     <div style="font-size:17px;font-weight:700;margin-bottom:10px;font-family:var(--font-head)">Form Cues</div>
     <div class="card-section">${cues}</div>
+    ${renderExHistory(id)}
   </div>`;
+}
+
+// Only appears once there's something to show — an exercise you've never
+// logged sets for stays as clean as it was before.
+function renderExHistory(exId){
+  const hist=exerciseHistory(exId,8);
+  if(!hist.length) return '';
+  const rows=hist.map(h=>`
+    <div class="hist-row">
+      <div class="hist-date">${esc(h.date)}</div>
+      <div class="hist-sets">${esc(formatSetSummary(h.sets))}</div>
+    </div>`).join('');
+  return `
+    <div style="font-size:17px;font-weight:700;margin:20px 0 10px;font-family:var(--font-head)">Your History</div>
+    <div class="card-section">${rows}</div>`;
 }
 
 function bindExDetail(){
@@ -889,13 +980,13 @@ function renderCustomExEditor(){
   const cueRows=(ex.formCues||['']).map((c,i)=>`
     <div class="cue-edit-row">
       <div class="cue-num">${i+1}</div>
-      <textarea class="cue-input" data-cue="${i}" rows="2" placeholder="Step ${i+1}…">${c}</textarea>
+      <textarea class="cue-input" data-cue="${i}" rows="2" placeholder="Step ${i+1}…">${esc(c)}</textarea>
       <button class="icon-btn" data-cue-del="${i}" style="color:var(--red);margin-top:6px">✕</button>
     </div>`).join('');
   const imgPreview=ex.videoFile
-    ?`<video id="cex-img-preview" src="${ex.videoFile}" style="width:80px;height:80px;object-fit:contain;border-radius:var(--radius);background:var(--bg3)" autoplay muted loop playsinline></video>`
+    ?`<video id="cex-img-preview" src="${esc(ex.videoFile)}" style="width:80px;height:80px;object-fit:contain;border-radius:var(--radius);background:var(--bg3)" autoplay muted loop playsinline></video>`
     :ex.gifFile
-      ?`<img src="${ex.gifFile}" id="cex-img-preview" style="width:80px;height:80px;object-fit:contain;border-radius:var(--radius);background:var(--bg3)">`
+      ?`<img src="${esc(ex.gifFile)}" id="cex-img-preview" style="width:80px;height:80px;object-fit:contain;border-radius:var(--radius);background:var(--bg3)">`
       :`<div id="cex-img-preview" style="width:80px;height:80px;border-radius:var(--radius);background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--fg3);font-size:28px">🖼️</div>`;
   return `
   <div class="page-header">
@@ -904,7 +995,7 @@ function renderCustomExEditor(){
     <button class="hdr-btn" id="cex-save" style="font-size:13px;font-weight:700;padding:6px 10px;width:auto">Save</button>
   </div>
   <div style="padding:0 16px 40px">
-    <div class="field"><label>Name</label><input id="cex-name" type="text" value="${ex.name}" placeholder="Exercise name…"></div>
+    <div class="field"><label>Name</label><input id="cex-name" type="text" value="${esc(ex.name)}" placeholder="Exercise name…"></div>
 
     <p class="section-title" style="margin-bottom:8px">Image / GIF <span style="font-weight:400;text-transform:none;color:var(--fg3)">(optional)</span></p>
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
@@ -1059,10 +1150,10 @@ function bindCustomExEditor(){
 // ─── ROUTINES ────────────────────────────────────────
 function renderRoutines(){
   const rows=ROUTINES.map(r=>`
-    <div class="card-row" data-rid="${r.id}">
+    <div class="card-row" data-rid="${esc(r.id)}">
       <div style="flex:1;min-width:0">
-        <div style="font-size:16px;font-weight:600">${r.name}</div>
-        <div style="font-size:13px;color:var(--fg2);margin-top:2px">${r.entries.length} exercises${r.description?' · '+r.description.slice(0,50):''}</div>
+        <div style="font-size:16px;font-weight:600">${esc(r.name)}</div>
+        <div style="font-size:13px;color:var(--fg2);margin-top:2px">${r.entries.length} exercises${r.description?' · '+esc(r.description.slice(0,50)):''}</div>
       </div>
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--fg3);flex-shrink:0"><path d="M9 18l6-6-6-6"/></svg>
     </div>`).join('');
@@ -1095,7 +1186,7 @@ function renderRoutineEditor(){
     return `<div class="routine-entry">
       ${exMediaEl(ex,'ex-gif','width:40px;height:40px')||`<img class="ex-gif" src="" style="width:40px;height:40px" alt="">`}
       <div class="re-info">
-        <div class="re-name">${ex?.name||'Unknown'}</div>
+        <div class="re-name">${esc(ex?.name||'Unknown')}</div>
         <div class="re-detail">${e.sets}×${e.reps} · ${e.restSec}s rest · incline ${e.targetIncline}</div>
       </div>
       <button class="re-del" data-idx="${i}" aria-label="Remove">✕</button>
@@ -1104,12 +1195,12 @@ function renderRoutineEditor(){
   return `
   <div class="page-header">
     <button class="back-btn" id="routine-back">← Routines</button>
-    <div class="page-title" style="font-size:20px">${isNew?'New Routine':r.name}</div>
+    <div class="page-title" style="font-size:20px">${isNew?'New Routine':esc(r.name)}</div>
     <button class="btn-ghost btn" id="routine-save">Save</button>
   </div>
   <div style="padding:16px">
-    <div class="field"><label>Name</label><input id="r-name" type="text" value="${r.name}" placeholder="e.g. My Full Body Routine"></div>
-    <div class="field"><label>Description</label><textarea id="r-desc" placeholder="What this routine is for…">${r.description||''}</textarea></div>
+    <div class="field"><label>Name</label><input id="r-name" type="text" value="${esc(r.name)}" placeholder="e.g. My Full Body Routine"></div>
+    <div class="field"><label>Description</label><textarea id="r-desc" placeholder="What this routine is for…">${esc(r.description)}</textarea></div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin:16px 0 8px">
       <div style="font-size:17px;font-weight:700">Exercises (${r.entries.length})</div>
       <button class="btn btn-sm" id="add-ex-btn" style="background:var(--accent-dim);color:var(--accent)">+ Add Exercise</button>
@@ -1172,9 +1263,9 @@ function showExercisePicker(){
     if(!list) return;
     if(pickerObserver){pickerObserver.disconnect();pickerObserver=null;}
     const rows=getFiltered().map(e=>`
-      <div class="ex-row picker-ex" data-exid="${e.id}">
+      <div class="ex-row picker-ex" data-exid="${esc(e.id)}">
         ${exMediaEl(e,'ex-gif','width:40px;height:40px',true)||''}
-        <div class="ex-info"><div class="ex-name">${e.name}</div><div class="ex-meta">${e.muscleGroup}</div></div>
+        <div class="ex-info"><div class="ex-name">${esc(e.name)}</div><div class="ex-meta">${esc(e.muscleGroup)}</div></div>
       </div>`).join('');
     list.innerHTML=rows||'<div style="padding:16px;text-align:center;color:var(--fg3)">No exercises match.</div>';
     list.querySelectorAll('.picker-ex').forEach(el=>el.addEventListener('click',()=>{
@@ -1236,7 +1327,7 @@ function showExEntryModal(exId){
   const content=`
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
       ${exMediaEl(ex,null,'width:56px;height:56px;border-radius:8px;object-fit:cover')||''}
-      <div style="font-size:17px;font-weight:700">${ex.name}</div>
+      <div style="font-size:17px;font-weight:700">${esc(ex.name)}</div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
       <div class="field" style="margin:0"><label>Sets</label><input id="entry-sets" type="number" value="3" min="1" max="20"></div>
@@ -1245,7 +1336,7 @@ function showExEntryModal(exId){
       <div class="field" style="margin:0"><label>Incline (1-10)</label><input id="entry-incline" type="number" value="5" min="1" max="10"></div>
     </div>
     <button class="btn btn-primary" id="confirm-add-ex">Add to Routine</button>`;
-  showModal(`Add ${ex.name}`,content);
+  showModal(`Add ${esc(ex.name)}`,content);
   setTimeout(()=>{
     document.getElementById('confirm-add-ex')?.addEventListener('click',()=>{
       const entry={
@@ -1265,10 +1356,10 @@ function showExEntryModal(exId){
 // ─── PROGRAMS ────────────────────────────────────────
 function renderPrograms(){
   const rows=PROGRAMS.map(p=>`
-    <div class="card-row" data-pid="${p.id}">
+    <div class="card-row" data-pid="${esc(p.id)}">
       <div style="flex:1;min-width:0">
-        <div style="font-size:16px;font-weight:600;display:flex;align-items:center;gap:8px">${p.name}${state.activeProgram===p.id?'<span class="tag">Active</span>':''}</div>
-        <div style="font-size:13px;color:var(--fg2);margin-top:2px">${p.weeklyTargetN}×/week · ${p.description||''}</div>
+        <div style="font-size:16px;font-weight:600;display:flex;align-items:center;gap:8px">${esc(p.name)}${state.activeProgram===p.id?'<span class="tag">Active</span>':''}</div>
+        <div style="font-size:13px;color:var(--fg2);margin-top:2px">${p.weeklyTargetN}×/week · ${esc(p.description)}</div>
       </div>
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--fg3);flex-shrink:0"><path d="M9 18l6-6-6-6"/></svg>
     </div>`).join('');
@@ -1305,18 +1396,18 @@ function renderProgramEditor(){
     const r=ROUTINES.find(r=>r.id===rid);
     return `<div class="day-cell" data-day="${day}">
       <div class="day-label">${day}</div>
-      ${r?`<div class="day-routine">${r.name.length>10?r.name.slice(0,10)+'…':r.name}</div>`:`<div class="day-rest">Rest</div>`}
+      ${r?`<div class="day-routine">${esc(r.name.length>10?r.name.slice(0,10)+'…':r.name)}</div>`:`<div class="day-rest">Rest</div>`}
     </div>`;
   }).join('');
   return `
   <div class="page-header">
     <button class="back-btn" id="prog-back">← Programs</button>
-    <div class="page-title" style="font-size:20px">${isNew?'New Program':p.name}</div>
+    <div class="page-title" style="font-size:20px">${isNew?'New Program':esc(p.name)}</div>
     <button class="btn-ghost btn" id="prog-save">Save</button>
   </div>
   <div style="padding:16px">
-    <div class="field"><label>Name</label><input id="p-name" type="text" value="${p.name}" placeholder="e.g. My 5-Day Split"></div>
-    <div class="field"><label>Description</label><textarea id="p-desc" placeholder="What this program is about…">${p.description||''}</textarea></div>
+    <div class="field"><label>Name</label><input id="p-name" type="text" value="${esc(p.name)}" placeholder="e.g. My 5-Day Split"></div>
+    <div class="field"><label>Description</label><textarea id="p-desc" placeholder="What this program is about…">${esc(p.description)}</textarea></div>
     <div class="field">
       <label>Weekly Target (workouts/week)</label>
       <select id="p-target">${[1,2,3,4,5,6,7].map(n=>`<option value="${n}" ${p.weeklyTargetN===n?'selected':''}>${n}×/week</option>`).join('')}</select>
@@ -1365,8 +1456,8 @@ function showDayPicker(day){
   syncProgramForm(); // capture any unsaved text before the modal opens
   const current=state.editProgram.schedule[day];
   const options=`<div class="card-row" data-routine-pick="" style="color:var(--fg3)"><div style="flex:1">Rest (no workout)</div>${!current?'<span style="color:var(--green)">✓</span>':''}</div>`+
-    ROUTINES.map(r=>`<div class="card-row" data-routine-pick="${r.id}"><div style="flex:1">${r.name}</div>${current===r.id?'<span style="color:var(--green)">✓</span>':''}</div>`).join('');
-  showModal(`${day} — Choose Routine`,`<div class="card-section">${options}</div>`);
+    ROUTINES.map(r=>`<div class="card-row" data-routine-pick="${esc(r.id)}"><div style="flex:1">${esc(r.name)}</div>${current===r.id?'<span style="color:var(--green)">✓</span>':''}</div>`).join('');
+  showModal(`${esc(day)} — Choose Routine`,`<div class="card-section">${options}</div>`);
   setTimeout(()=>{
     document.querySelectorAll('[data-routine-pick]').forEach(el=>el.addEventListener('click',()=>{
       state.editProgram.schedule[day]=el.dataset.routinePick||null;
@@ -1493,7 +1584,10 @@ async function doExport({incLogs=true,incCustom=true,incRoutines=true,incProgram
   const allUserEx=await dbGetAll('userEx');
   const customEx=allUserEx.filter(u=>u.isCustom);
   const favOverrides=allUserEx.filter(u=>!u.isCustom);
-  const data={schema:2,version:'1.0',exportedAt:new Date().toISOString()};
+  // schema 3 adds populated log.sets[] (per-set reps/incline/load from guided
+  // mode). Purely additive — schema 2 files import unchanged, and older app
+  // builds accept a 3 file because they only check `schema >= 1`.
+  const data={schema:3,version:'1.1',exportedAt:new Date().toISOString()};
   if(incLogs) data.logs=state.logs;
   if(incCustom) data.customExercises=customEx;
   if(incRoutines) data.routines=ROUTINES.filter(r=>!r.isStarter);
@@ -1508,18 +1602,135 @@ async function doExport({incLogs=true,incCustom=true,incRoutines=true,incProgram
   showToast('Backup downloaded!');
 }
 
+// ─── Import sanitising ───────────────────────────────
+// A backup can come from a friend, so treat every field as untrusted: keep the
+// shape the app expects, drop anything it doesn't, and clamp numbers into the
+// ranges the UI can actually render.
+const THEMES=['dark','light','warm','auto'];
+function sInt(v,min,max,dflt){
+  const n=parseInt(v);
+  if(!Number.isFinite(n)) return dflt;
+  return Math.min(max,Math.max(min,n));
+}
+function sStr(v,maxLen=200){
+  if(typeof v!=='string') return '';
+  return v.slice(0,maxLen);
+}
+function isDateStr(v){return typeof v==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(v)}
+
+function sanitizeSet(s){
+  if(!s||typeof s!=='object') return null;
+  return {
+    exerciseId:sStr(s.exerciseId,120),
+    entryIndex:sInt(s.entryIndex,0,999,0),
+    setIndex:sInt(s.setIndex,0,999,0),
+    reps:sInt(s.reps,0,1000,0),
+    incline:sInt(s.incline,1,10,5),
+    addedLoad:s.addedLoad==null?null:sInt(s.addedLoad,0,2000,0)
+  };
+}
+function sanitizeLog(l){
+  if(!l||typeof l!=='object'||!isDateStr(l.date)) return null;
+  const out={
+    date:l.date,
+    routineId:sStr(l.routineId,120),
+    routineName:sStr(l.routineName,120),
+    mode:l.mode==='guided'?'guided':'checkoff',
+    sets:Array.isArray(l.sets)?l.sets.map(sanitizeSet).filter(Boolean):[],
+    durationSec:sInt(l.durationSec,0,86400,0),
+    feltLike:sInt(l.feltLike,1,5,2)
+  };
+  if(Number.isFinite(l.id)) out.id=l.id;
+  return out;
+}
+function sanitizeRoutine(r){
+  if(!r||typeof r!=='object'||!sStr(r.id)) return null;
+  return {
+    id:sStr(r.id,120),
+    name:sStr(r.name,120)||'Untitled Routine',
+    description:sStr(r.description,500),
+    isStarter:!!r.isStarter,
+    entries:(Array.isArray(r.entries)?r.entries:[]).map(e=>e&&typeof e==='object'?{
+      exerciseId:sStr(e.exerciseId,120),
+      sets:sInt(e.sets,1,20,3),
+      reps:sInt(e.reps,1,100,10),
+      restSec:sInt(e.restSec,0,600,60),
+      targetIncline:sInt(e.targetIncline,1,10,5)
+    }:null).filter(e=>e&&e.exerciseId)
+  };
+}
+function sanitizeProgram(p){
+  if(!p||typeof p!=='object'||!sStr(p.id)) return null;
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const schedule={};
+  days.forEach(d=>{schedule[d]=sStr(p.schedule?.[d],120)||null});
+  return {
+    id:sStr(p.id,120),
+    name:sStr(p.name,120)||'Untitled Program',
+    description:sStr(p.description,500),
+    weeklyTargetN:sInt(p.weeklyTargetN,1,7,3),
+    isStarter:!!p.isStarter,
+    schedule
+  };
+}
+function sanitizeExercise(e){
+  if(!e||typeof e!=='object'||!sStr(e.id)) return null;
+  const out={
+    id:sStr(e.id,120),
+    name:sStr(e.name,120)||'Untitled Exercise',
+    muscleGroup:GROUPS.includes(e.muscleGroup)?e.muscleGroup:'Chest',
+    movementPattern:PATTERNS.includes(e.movementPattern)?e.movementPattern:'push',
+    attachment:ATTACHES.includes(e.attachment)?e.attachment:'none',
+    formCues:(Array.isArray(e.formCues)?e.formCues:[]).slice(0,30).map(c=>sStr(c,1000)),
+    favorite:!!e.favorite,
+    isCustom:!!e.isCustom
+  };
+  // Media is only ever a same-origin path or a data: URI produced by the editor.
+  // Anything else (javascript:, remote URLs) is dropped rather than rendered.
+  const okMedia=v=>typeof v==='string'&&(v.startsWith('images/')||v.startsWith('data:image/')||v.startsWith('data:video/'));
+  if(okMedia(e.videoFile)) out.videoFile=e.videoFile;
+  if(okMedia(e.gifFile)) out.gifFile=e.gifFile;
+  return out;
+}
+function sanitizeSettings(s){
+  if(!s||typeof s!=='object') return null;
+  const out={};
+  if(THEMES.includes(s.theme)) out.theme=s.theme;
+  if(typeof s.activeProgram==='string') out.activeProgram=sStr(s.activeProgram,120);
+  if(typeof s.iosTipSeen==='boolean') out.iosTipSeen=s.iosTipSeen;
+  return Object.keys(out).length?out:null;
+}
+
 async function importData(file){
   if(!file) return;
   try{
     const text=await file.text();
-    const data=JSON.parse(text);
-    if(!data.schema||data.schema<1) throw new Error('Invalid backup file');
+    const raw=JSON.parse(text);
+    if(!raw||typeof raw!=='object'||!raw.schema||raw.schema<1) throw new Error('Invalid backup file');
+    const data={
+      schema:raw.schema,
+      exportedAt:typeof raw.exportedAt==='string'?raw.exportedAt:'',
+      logs:Array.isArray(raw.logs)?raw.logs.map(sanitizeLog).filter(Boolean):null,
+      routines:Array.isArray(raw.routines)?raw.routines.map(sanitizeRoutine).filter(Boolean):null,
+      programs:Array.isArray(raw.programs)?raw.programs.map(sanitizeProgram).filter(Boolean):null,
+      // Anything in this bucket is by definition a custom exercise, whatever the
+      // file claims — the flag drives the "custom" badge and the userEx store.
+      customExercises:Array.isArray(raw.customExercises)
+        ?raw.customExercises.map(e=>{const s=sanitizeExercise(e);return s?{...s,isCustom:true}:null}).filter(Boolean)
+        :null,
+      userExerciseOverrides:Array.isArray(raw.userExerciseOverrides)
+        ?raw.userExerciseOverrides.map(u=>u&&typeof u==='object'&&sStr(u.id)
+            ?(u.isCustom?sanitizeExercise(u):{id:sStr(u.id,120),favorite:!!u.favorite})
+            :null).filter(Boolean)
+        :null,
+      settings:sanitizeSettings(raw.settings)
+    };
     const parts=[];
     if(data.logs?.length) parts.push(`${data.logs.length} logs`);
     if(data.customExercises?.length) parts.push(`${data.customExercises.length} custom exercises`);
     if(data.routines?.length) parts.push(`${data.routines.length} routines`);
     if(data.programs?.length) parts.push(`${data.programs.length} programs`);
-    const msg=`Import ${parts.join(', ')||'data'} from ${data.exportedAt?.slice(0,10)||'?'}? Existing matching items will be replaced.`;
+    const msg=`Import ${parts.join(', ')||'data'} from ${esc(data.exportedAt.slice(0,10))||'?'}? Existing matching items will be replaced.`;
     showConfirm('Import Backup?',msg,async()=>{
       // Clear existing user data (only what's present in the file)
       if(data.logs){for(const l of state.logs) if(l.id) await dbDelete('logs',l.id);state.logs=[];}
@@ -1538,7 +1749,15 @@ async function importData(file){
         if(u.isCustom){const idx=EXERCISES.findIndex(e=>e.id===u.id);if(idx>=0) EXERCISES[idx]=u;else EXERCISES.push(u);}
         else{await dbPut('userEx',u);const ex=EXERCISES.find(e=>e.id===u.id);if(ex)Object.assign(ex,u);}
       }
-      if(data.settings){await saveSettings(data.settings);}
+      if(data.settings){
+        await saveSettings(data.settings);
+        // theme and activeProgram are mirrored onto state at init, so writing
+        // the settings store alone left the running session on the old values
+        // until the next manual reload.
+        if(data.settings.theme){state.theme=data.settings.theme;applyTheme(state.theme);}
+        if(data.settings.activeProgram&&PROGRAMS.some(p=>p.id===data.settings.activeProgram))
+          state.activeProgram=data.settings.activeProgram;
+      }
       showToast('Import complete!');nav('today');
     });
   }catch(err){showToast('Import failed: '+err.message);}
@@ -1602,15 +1821,101 @@ function loadSavedWorkout(){
   if(!valid){ try{localStorage.removeItem(WORKOUT_KEY)}catch(e){} return null; }
   if(!Array.isArray(w.checked)||w.checked.length!==w.entries.length)
     w.checked=Array(w.entries.length).fill(false);
+  w.entries.forEach(e=>{if(!Array.isArray(e.loggedSets)) e.loggedSets=[]});
   w.current=Math.min(Math.max(w.current|0,0),w.entries.length-1);
+  // restEnd is an absolute timestamp, so a rest that expired while the app was
+  // dead simply reads as already-finished — nothing to reconcile.
+  if(typeof w.restEnd!=='number') w.restEnd=null;
+  if(w.editingSet==null) w.editingSet=null;
   return w;
 }
 function endWorkout(){
   clearInterval(_workoutTimer);
+  _workoutTimer=null;
   state.workout=null;
+  releaseWakeLock();
   saveWorkout();
 }
 
+// ─── Screen wake lock ────────────────────────────────
+// A phone that locks itself between sets is the single most annoying thing a
+// workout app can do. The lock is dropped by the browser whenever the page is
+// hidden, so it has to be re-acquired on the way back.
+let _wakeLock=null;
+async function acquireWakeLock(){
+  try{
+    if(!('wakeLock' in navigator)) return;
+    if(_wakeLock) return;
+    _wakeLock=await navigator.wakeLock.request('screen');
+    _wakeLock.addEventListener?.('release',()=>{_wakeLock=null});
+  }catch(e){ _wakeLock=null; }
+}
+function releaseWakeLock(){
+  try{ _wakeLock?.release(); }catch(e){}
+  _wakeLock=null;
+}
+
+// ─── Rest-timer cues ─────────────────────────────────
+// iOS Safari has no navigator.vibrate at all, so vibration alone would leave
+// iPhone users with a silent timer. Fall back to a short WebAudio tone, which
+// needs an AudioContext unlocked by a real user gesture (workout start).
+let _audioCtx=null;
+function unlockAudio(){
+  if(_audioCtx) return;
+  try{
+    const C=window.AudioContext||window.webkitAudioContext;
+    if(!C) return;
+    _audioCtx=new C();
+    if(_audioCtx.state==='suspended') _audioCtx.resume();
+  }catch(e){ _audioCtx=null; }
+}
+function restChime(){
+  let vibrated=false;
+  try{
+    if(navigator.vibrate) vibrated=navigator.vibrate([180,90,180]);
+  }catch(e){}
+  if(vibrated) return;
+  try{
+    if(!_audioCtx) return;
+    if(_audioCtx.state==='suspended') _audioCtx.resume();
+    const t=_audioCtx.currentTime;
+    [0,0.18].forEach(off=>{
+      const osc=_audioCtx.createOscillator();
+      const gain=_audioCtx.createGain();
+      osc.frequency.value=880;
+      gain.gain.setValueAtTime(0.0001,t+off);
+      gain.gain.exponentialRampToValueAtTime(0.25,t+off+0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001,t+off+0.14);
+      osc.connect(gain);gain.connect(_audioCtx.destination);
+      osc.start(t+off);osc.stop(t+off+0.16);
+    });
+  }catch(e){}
+}
+
+// ─── Set history ─────────────────────────────────────
+// Reads across saved logs, so it works for any exercise the user has ever
+// logged sets against — including from an imported backup.
+function exerciseHistory(exerciseId,limit=8){
+  return state.logs
+    .filter(l=>l.date&&Array.isArray(l.sets)&&l.sets.some(s=>s.exerciseId===exerciseId))
+    .sort((a,b)=> a.date<b.date?1 : a.date>b.date?-1 : (b.id||0)-(a.id||0))
+    .slice(0,limit)
+    .map(l=>({
+      date:l.date,
+      sets:l.sets.filter(s=>s.exerciseId===exerciseId)
+                 .sort((a,b)=>(a.setIndex||0)-(b.setIndex||0))
+    }));
+}
+function formatSetSummary(sets){
+  if(!sets.length) return '';
+  const reps=sets.map(s=>s.reps).join(' · ');
+  const inclines=[...new Set(sets.map(s=>s.incline))];
+  const load=sets.find(s=>s.addedLoad);
+  return `${reps} @ incline ${inclines.length===1?inclines[0]:inclines.join('/')}`+
+         (load?` · +${load.addedLoad}`:'');
+}
+
+// ─── Workout lifecycle ───────────────────────────────
 function startWorkout(routineId,mode){
   const r=ROUTINES.find(r=>r.id===routineId);
   if(!r) return;
@@ -1619,8 +1924,11 @@ function startWorkout(routineId,mode){
     entries:r.entries.map(e=>({...e,loggedSets:[]})),
     checked:Array(r.entries.length).fill(false),
     current:0,durationStart:Date.now(),
-    finished:false,restEnd:null,feltLike:2
+    finished:false,restEnd:null,restNotified:false,
+    editingSet:null,draft:null,showLoad:false,feltLike:2
   };
+  unlockAudio();      // must ride the tap that started the workout
+  acquireWakeLock();
   saveWorkout();
   nav('workout');
 }
@@ -1637,13 +1945,82 @@ function showWorkoutModePicker(){
 }
 
 function showRoutinePicker(mode){
-  const opts=ROUTINES.map(r=>`<div class="card-row" data-rpick="${r.id}"><div style="flex:1">${r.name}</div></div>`).join('');
+  const opts=ROUTINES.map(r=>`<div class="card-row" data-rpick="${esc(r.id)}"><div style="flex:1">${esc(r.name)}</div></div>`).join('');
   showModal('Choose a Routine',`<div class="card-section">${opts}</div>`);
   setTimeout(()=>{
     document.querySelectorAll('[data-rpick]').forEach(el=>el.addEventListener('click',()=>{
       closeModal();startWorkout(el.dataset.rpick,mode);
     }));
   },50);
+}
+
+// Flatten the per-exercise sets into the flat log.sets[] shape. entryIndex is
+// kept alongside exerciseId so a routine that uses the same exercise twice
+// stays reconstructable.
+function collectSets(w){
+  return w.entries.flatMap((e,ei)=>
+    (e.loggedSets||[]).map((s,si)=>({
+      exerciseId:e.exerciseId,
+      entryIndex:ei,
+      setIndex:si,
+      reps:s.reps,
+      incline:s.incline,
+      addedLoad:s.addedLoad||null
+    }))
+  );
+}
+function loggedSetCount(w){
+  return w?w.entries.reduce((n,e)=>n+(e.loggedSets?.length||0),0):0;
+}
+
+async function saveWorkoutLog(w,mode){
+  const durationSec=Math.round((Date.now()-w.durationStart)/1000);
+  const log={
+    date:todayStr(),
+    routineId:w.routineId,
+    routineName:w.routineName,
+    mode,
+    sets:mode==='guided'?collectSets(w):[],
+    durationSec,
+    feltLike:w.feltLike||2
+  };
+  const id=await dbPut('logs',log);
+  log.id=id;
+  state.logs.push(log);
+  endWorkout();
+  return log;
+}
+
+// ─── Draft (the set you're about to log) ─────────────
+// Defaults to the prescription for set 1, then to whatever you actually did on
+// the previous set — if you dropped to 8 reps, set 3 shouldn't jump back to 12.
+function draftFor(w){
+  const entry=w.entries[w.current];
+  if(!entry) return {reps:10,incline:5,load:0};
+  if(w.editingSet!=null){
+    const s=entry.loggedSets[w.editingSet];
+    if(s) return {reps:s.reps,incline:s.incline,load:s.addedLoad||0};
+  }
+  const prev=entry.loggedSets[entry.loggedSets.length-1];
+  return prev
+    ? {reps:prev.reps,incline:prev.incline,load:prev.addedLoad||0}
+    : {reps:entry.reps,incline:entry.targetIncline,load:0};
+}
+function ensureDraft(w){
+  if(!w.draft) w.draft=draftFor(w);
+  return w.draft;
+}
+
+function startRest(w){
+  const entry=w.entries[w.current];
+  const secs=entry?.restSec;
+  if(!secs||secs<1){ w.restEnd=null; return; }
+  w.restEnd=Date.now()+secs*1000;
+  w.restNotified=false;
+}
+function restRemaining(w){
+  if(!w?.restEnd) return null;
+  return Math.max(0,Math.ceil((w.restEnd-Date.now())/1000));
 }
 
 function renderWorkoutView(){
@@ -1661,7 +2038,7 @@ function renderWorkoutView(){
         <button class="check-circle${done?' checked':''}" data-chk-btn="${i}">${done?'✓':''}</button>
         ${exMediaEl(ex,'chk-thumb')||''}
         <div class="chk-info">
-          <div class="chk-name">${ex.name}</div>
+          <div class="chk-name">${esc(ex.name)}</div>
           <div class="chk-meta">${entry.sets} sets × ${entry.reps} reps · incline ${entry.targetIncline}</div>
         </div>
       </div>`;
@@ -1669,7 +2046,7 @@ function renderWorkoutView(){
     return `<div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
       <div style="padding:16px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;display:flex;justify-content:space-between;align-items:center">
         <div>
-          <div style="font-size:18px;font-weight:800;font-family:var(--font-head)">${w.routineName}</div>
+          <div style="font-size:18px;font-weight:800;font-family:var(--font-head)">${esc(w.routineName)}</div>
           <div id="workout-elapsed" style="font-size:12px;color:var(--fg3);margin-top:3px">⏱ 00:00</div>
         </div>
         <button class="back-btn" id="quit-workout" style="color:var(--red)">Quit</button>
@@ -1685,13 +2062,22 @@ function renderWorkoutView(){
     </div>`;
   }
 
-  // ── GUIDED mode: step-by-step, one exercise at a time with GIF + form cues ──
+  // ── GUIDED mode: one exercise at a time, logging set by set ──
   const entry=w.entries[w.current];
   const ex=EXERCISES.find(e=>e.id===entry?.exerciseId);
   if(!ex) return '';
   const totalEx=w.entries.length;
-  const progress=(w.current/totalEx*100).toFixed(0);
-  const isLast=w.current+1>=totalEx;
+  const doneSets=loggedSetCount(w);
+  const totalSets=w.entries.reduce((n,e)=>n+(e.sets||0),0);
+  const progress=totalSets?Math.min(100,doneSets/totalSets*100).toFixed(0):0;
+
+  const hist=exerciseHistory(entry.exerciseId,1)[0];
+  const lastTimeHtml=hist?`
+    <div class="last-time">
+      <div class="lt-hd">Last time · ${esc(hist.date)}</div>
+      <div class="lt-v">${esc(formatSetSummary(hist.sets))}</div>
+    </div>`:'';
+
   return `<div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
     <div style="padding:16px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
@@ -1702,34 +2088,229 @@ function renderWorkoutView(){
         <button class="back-btn" id="quit-workout" style="color:var(--red)">Quit</button>
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
-      <div style="font-size:20px;font-weight:800;font-family:var(--font-head);margin-top:10px">${ex.name}</div>
-      <div style="font-size:13px;color:var(--fg2)">${ex.muscleGroup} · ${entry.sets} sets × ${entry.reps} reps · incline ${entry.targetIncline}</div>
+      <div style="font-size:20px;font-weight:800;font-family:var(--font-head);margin-top:10px">${esc(ex.name)}</div>
+      <div style="font-size:13px;color:var(--fg2)">${esc(ex.muscleGroup)} · target ${entry.sets} × ${entry.reps} · incline ${entry.targetIncline}</div>
     </div>
     <div style="flex:1;overflow-y:auto;padding:16px">
-      ${exMediaEl(ex,null,'width:100%;max-height:260px;object-fit:contain;border-radius:var(--radius);background:var(--bg3);margin-bottom:16px')||''}
-      ${ex.formCues.map((c,ci)=>`<div class="cue-item"><div class="cue-num">${ci+1}</div><div>${c}</div></div>`).join('')}
+      ${exMediaEl(ex,null,'width:100%;max-height:220px;object-fit:contain;border-radius:var(--radius);background:var(--bg3);margin-bottom:14px')||''}
+      ${lastTimeHtml}
+      ${(ex.formCues||[]).map((c,ci)=>`<div class="cue-item"><div class="cue-num">${ci+1}</div><div>${esc(c)}</div></div>`).join('')}
     </div>
-    <div style="padding:16px;border-top:1px solid var(--border);flex-shrink:0;display:flex;gap:10px">
-      ${w.current>0?`<button class="btn btn-secondary" id="guided-back" style="width:auto;padding:13px 18px">←</button>`:''}
-      <button class="btn btn-primary" id="guided-next" style="flex:1">
-        ${isLast?'✓ Done — Complete Routine':'✓ Done — Next Exercise →'}
-      </button>
+    <div id="wk-footer" style="padding:12px 16px 16px;border-top:1px solid var(--border);flex-shrink:0;background:var(--bg2)">
+      ${renderGuidedFooter(w)}
     </div>
   </div>`;
 }
 
+// Footer is rendered on its own so logging a set can refresh just this block —
+// a full re-render would restart the exercise video mid-exercise.
+function renderGuidedFooter(w){
+  const entry=w.entries[w.current];
+  if(!entry) return '';
+  const logged=entry.loggedSets||[];
+  const target=entry.sets||1;
+  const d=ensureDraft(w);
+  const editing=w.editingSet!=null;
+  const setNo=editing?w.editingSet+1:logged.length+1;
+  const beyondTarget=!editing&&logged.length>=target;
+  const isLastEx=w.current+1>=w.entries.length;
+
+  const pillCount=Math.max(target,logged.length);
+  const pills=Array.from({length:pillCount},(_,i)=>{
+    const s=logged[i];
+    const cls=['set-pill'];
+    if(s) cls.push('logged');
+    if(editing&&w.editingSet===i) cls.push('editing');
+    else if(!editing&&i===logged.length) cls.push('active');
+    return `<div class="${cls.join(' ')}" data-set-pill="${i}">
+      <div class="sp-n">Set ${i+1}</div>
+      <div class="sp-v">${s?esc(s.reps):'—'}</div>
+    </div>`;
+  }).join('');
+
+  const rem=restRemaining(w);
+  const restCls='rest-banner'+(rem==null?'':' on')+(rem===0?' done':'');
+  const restTxt=rem==null?'':(rem>0?`Rest ${Math.floor(rem/60)}:${String(rem%60).padStart(2,'0')}`:'Rest done — go');
+
+  return `
+    <div id="rest-banner" class="${restCls}">
+      <span class="rest-lbl" id="rest-remaining">${restTxt}</span>
+      <button id="rest-plus">+15s</button>
+      <button id="rest-skip">Skip</button>
+    </div>
+    <div class="set-pills">${pills}</div>
+    <div class="stepper-row">
+      <div class="stepper">
+        <div class="st-lbl">Reps</div>
+        <div class="st-ctl">
+          <button data-step="reps:-1">−</button>
+          <span class="st-val" id="draft-reps">${d.reps}</span>
+          <button data-step="reps:1">+</button>
+        </div>
+      </div>
+      <div class="stepper">
+        <div class="st-lbl">Incline</div>
+        <div class="st-ctl">
+          <button data-step="incline:-1">−</button>
+          <span class="st-val" id="draft-incline">${d.incline}</span>
+          <button data-step="incline:1">+</button>
+        </div>
+      </div>
+      ${w.showLoad?`
+      <div class="stepper">
+        <div class="st-lbl">Load</div>
+        <div class="st-ctl">
+          <button data-step="load:-5">−</button>
+          <span class="st-val" id="draft-load">${d.load}</span>
+          <button data-step="load:5">+</button>
+        </div>
+      </div>`:''}
+    </div>
+    <button class="btn btn-primary" id="log-set">
+      ${editing?`✓ Update Set ${setNo}`:`✓ Log Set ${setNo}${beyondTarget?' (extra)':''}`}
+    </button>
+    ${editing?`<div class="wk-actions"><button class="btn btn-secondary" id="cancel-edit" style="flex:1">Cancel edit</button></div>`
+      :`<div class="wk-actions">
+          ${w.current>0?`<button class="btn btn-secondary" id="guided-back" style="width:auto;padding:11px 15px">←</button>`:''}
+          <button class="btn btn-secondary" id="guided-next" style="flex:1">
+            ${isLastEx?'Finish Workout →':'Next Exercise →'}
+          </button>
+          <button class="btn btn-secondary" id="toggle-load" style="width:auto;padding:11px 13px" aria-label="Toggle added load">${w.showLoad?'−':'+'}⚖</button>
+        </div>`}
+  `;
+}
+
+function refreshGuidedFooter(){
+  const el=document.getElementById('wk-footer');
+  if(!el||!state.workout) return;
+  el.innerHTML=renderGuidedFooter(state.workout);
+  bindGuidedFooter();
+}
+
+function bindGuidedFooter(){
+  const w=state.workout;
+  if(!w||w.mode!=='guided') return;
+
+  // Steppers mutate the draft in place and repaint one number — a re-render
+  // here would restart the video on every tap.
+  document.querySelectorAll('[data-step]').forEach(el=>el.addEventListener('click',()=>{
+    const [field,delta]=el.dataset.step.split(':');
+    const d=ensureDraft(w);
+    if(field==='reps') d.reps=Math.max(0,Math.min(1000,d.reps+parseInt(delta)));
+    if(field==='incline') d.incline=Math.max(1,Math.min(10,d.incline+parseInt(delta)));
+    if(field==='load') d.load=Math.max(0,Math.min(2000,d.load+parseInt(delta)));
+    const out=document.getElementById('draft-'+field);
+    if(out) out.textContent=d[field];
+    saveWorkout();
+  }));
+
+  document.getElementById('log-set')?.addEventListener('click',()=>{
+    const entry=w.entries[w.current];
+    const d=ensureDraft(w);
+    const rec={reps:d.reps,incline:d.incline,addedLoad:d.load||null,ts:Date.now()};
+    if(w.editingSet!=null){
+      entry.loggedSets[w.editingSet]=rec;
+      w.editingSet=null;
+    }else{
+      entry.loggedSets.push(rec);
+      startRest(w);          // logging the set IS the "set finished" signal
+    }
+    w.draft=null;
+    saveWorkout();
+    refreshGuidedFooter();
+  });
+
+  // Tap a logged pill to correct it — mis-taps happen, and a log you can't fix
+  // is a log you stop trusting.
+  document.querySelectorAll('[data-set-pill]').forEach(el=>el.addEventListener('click',()=>{
+    const i=parseInt(el.dataset.setPill);
+    const entry=w.entries[w.current];
+    if(!entry.loggedSets[i]) return;
+    w.editingSet=(w.editingSet===i)?null:i;
+    w.draft=null;
+    saveWorkout();
+    refreshGuidedFooter();
+  }));
+
+  document.getElementById('cancel-edit')?.addEventListener('click',()=>{
+    w.editingSet=null;w.draft=null;saveWorkout();refreshGuidedFooter();
+  });
+
+  document.getElementById('toggle-load')?.addEventListener('click',()=>{
+    w.showLoad=!w.showLoad;saveWorkout();refreshGuidedFooter();
+  });
+
+  document.getElementById('rest-plus')?.addEventListener('click',()=>{
+    if(!w.restEnd) return;
+    w.restEnd=Math.max(Date.now(),w.restEnd)+15000;
+    w.restNotified=false;
+    saveWorkout();updateRestBanner();
+  });
+  document.getElementById('rest-skip')?.addEventListener('click',()=>{
+    w.restEnd=null;w.restNotified=false;saveWorkout();updateRestBanner();
+  });
+
+  document.getElementById('guided-next')?.addEventListener('click',()=>{
+    if(w.current+1>=w.entries.length){
+      w.finished=true;w.restEnd=null;saveWorkout();renderGuidedComplete();
+    }else{
+      w.current++;w.draft=null;w.editingSet=null;
+      startRest(w);          // rest carries across the gap between exercises
+      saveWorkout();render();
+    }
+  });
+  document.getElementById('guided-back')?.addEventListener('click',()=>{
+    if(w.current===0) return;
+    w.current--;w.draft=null;w.editingSet=null;
+    saveWorkout();render();
+  });
+}
+
+// Repaints the rest banner from the wall clock. Never re-renders.
+function updateRestBanner(){
+  const w=state.workout;
+  const banner=document.getElementById('rest-banner');
+  if(!banner||!w) return;
+  const rem=restRemaining(w);
+  const label=document.getElementById('rest-remaining');
+  if(rem==null){
+    banner.classList.remove('on','done');
+    if(label) label.textContent='';
+    return;
+  }
+  banner.classList.add('on');
+  banner.classList.toggle('done',rem===0);
+  if(label) label.textContent=rem>0
+    ? `Rest ${Math.floor(rem/60)}:${String(rem%60).padStart(2,'0')}`
+    : 'Rest done — go';
+  if(rem===0&&!w.restNotified){
+    w.restNotified=true;
+    restChime();
+    saveWorkout();
+    // Deliberately does NOT advance anything: if the timer runs out while
+    // you're still setting up, an app that jumps ahead on its own is worse
+    // than one that waits for you.
+  }
+}
+
 function bindWorkout(){
   clearInterval(_workoutTimer);
-  const elapsedEl=()=>document.getElementById('workout-elapsed');
   const tick=()=>{
-    const el=elapsedEl(); if(!el||!state.workout) return;
-    const s=Math.floor((Date.now()-state.workout.durationStart)/1000);
-    const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
-    el.textContent='⏱ '+(h?h+':'+String(m).padStart(2,'0'):String(m).padStart(2,'0'))+':'+String(sec).padStart(2,'0');
+    if(!state.workout) return;
+    const el=document.getElementById('workout-elapsed');
+    if(el){
+      const s=Math.floor((Date.now()-state.workout.durationStart)/1000);
+      const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
+      el.textContent='⏱ '+(h?h+':'+String(m).padStart(2,'0'):String(m).padStart(2,'0'))+':'+String(sec).padStart(2,'0');
+    }
+    updateRestBanner();
   };
   tick();
   _workoutTimer=setInterval(tick,1000);
-  document.getElementById('quit-workout')?.addEventListener('click',()=>showConfirm('Quit workout?','Your progress will be lost.',()=>{endWorkout();nav('today');}));
+  acquireWakeLock();
+
+  document.getElementById('quit-workout')?.addEventListener('click',confirmQuitWorkout);
+
   // Checkoff mode: checkbox toggles (targeted DOM update — no full re-render needed)
   document.querySelectorAll('[data-chk-btn]').forEach(el=>el.addEventListener('click',()=>{
     const i=parseInt(el.dataset.chkBtn);
@@ -1749,23 +2330,47 @@ function bindWorkout(){
   }));
   // Checkoff mode: complete routine
   document.getElementById('complete-checkoff')?.addEventListener('click',async()=>{
-    const w=state.workout;
-    const durationSec=Math.round((Date.now()-w.durationStart)/1000);
-    const log={date:todayStr(),routineId:w.routineId,routineName:w.routineName,mode:'checkoff',sets:[],durationSec,feltLike:w.feltLike||2};
-    const id=await dbPut('logs',log);log.id=id;
-    state.logs.push(log);endWorkout();showToast('Workout logged! 🎉');nav('today');
+    await saveWorkoutLog(state.workout,'checkoff');
+    showToast('Workout logged! 🎉');nav('today');
   });
-  // Guided mode: advance step-by-step, show end screen when done
-  document.getElementById('guided-next')?.addEventListener('click',()=>{
-    const w=state.workout;
-    if(w.current+1>=w.entries.length){ w.finished=true; saveWorkout(); renderGuidedComplete(); }
-    else { w.current++; saveWorkout(); render(); }
+
+  bindGuidedFooter();
+}
+
+// Quitting used to throw everything away. Now that guided mode holds real
+// per-set data, offer to keep it.
+function confirmQuitWorkout(){
+  const w=state.workout;
+  const n=loggedSetCount(w);
+  if(w?.mode!=='guided'||n===0){
+    showConfirm('Quit workout?','Your progress will be lost.',()=>{endWorkout();nav('today');});
+    return;
+  }
+  closeModal();
+  const exCount=w.entries.filter(e=>e.loggedSets?.length).length;
+  const backdrop=document.createElement('div');
+  backdrop.className='modal-backdrop';backdrop.id='modal-backdrop';
+  // The two safe options sit together, so a mis-tap between them costs
+  // nothing; discarding is below a divider and deliberately quiet.
+  backdrop.innerHTML=`<div class="modal-sheet">
+    <div class="modal-title">End workout?</div>
+    <p style="color:var(--fg2);font-size:14px;margin-bottom:18px;text-align:center">You've logged ${n} set${n!==1?'s':''} across ${exCount} exercise${exCount!==1?'s':''}.</p>
+    <button class="btn btn-primary" id="quit-save" style="margin-bottom:8px">Save what I did</button>
+    <button class="btn btn-secondary" id="quit-cancel">Keep going</button>
+    <hr class="sheet-sep">
+    <button class="btn btn-danger-quiet" id="quit-discard">Discard ${n} set${n!==1?'s':''}</button>
+  </div>`;
+  backdrop.addEventListener('click',e=>{if(e.target===backdrop)closeModal();});
+  document.body.appendChild(backdrop);
+  document.getElementById('quit-save').addEventListener('click',async()=>{
+    closeModal();
+    await saveWorkoutLog(state.workout,'guided');
+    showToast('Partial workout saved');nav('today');
   });
-  document.getElementById('guided-back')?.addEventListener('click',()=>{
-    state.workout.current--;
-    saveWorkout();
-    render();
+  document.getElementById('quit-discard').addEventListener('click',()=>{
+    closeModal();endWorkout();nav('today');
   });
+  document.getElementById('quit-cancel').addEventListener('click',closeModal);
 }
 
 // ── Guided workout end screen (replaces entire #view content) ──
@@ -1773,17 +2378,22 @@ function renderGuidedComplete(){
   const w=state.workout;
   if(!w) return;
   clearInterval(_workoutTimer);
+  _workoutTimer=null;
   const feels=[['😊','Easy'],['💪','Medium'],['😤','Hard'],['🔥','Intense'],['🏆','PR Day!']];
+  const n=loggedSetCount(w);
+  const totalReps=w.entries.reduce((t,e)=>t+(e.loggedSets||[]).reduce((s,x)=>s+(x.reps||0),0),0);
   document.getElementById('view').innerHTML=`
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;padding:32px 24px">
       <div style="font-size:56px;margin-bottom:12px">🏆</div>
       <div style="font-size:26px;font-weight:800;font-family:var(--font-head);margin-bottom:6px">All Done!</div>
-      <div style="color:var(--fg2);margin-bottom:28px;font-size:15px">${w.entries.length} exercise${w.entries.length!==1?'s':''} completed</div>
+      <div style="color:var(--fg2);margin-bottom:20px;font-size:15px;text-align:center">
+        ${w.entries.length} exercise${w.entries.length!==1?'s':''}${n?` · ${n} set${n!==1?'s':''} · ${totalReps} reps`:''}
+      </div>
       <div style="font-size:14px;font-weight:600;color:var(--fg2);margin-bottom:10px">How did it feel?</div>
       <div class="felt-row" style="width:100%;max-width:340px">${feels.map(([e,l],i)=>`<button class="felt-btn ${(w.feltLike||2)===(i+1)?'active':''}" data-felt="${i+1}">${e}<br><small>${l}</small></button>`).join('')}</div>
       <div style="width:100%;max-width:340px;margin-top:24px">
         <button class="btn btn-primary" id="complete-routine">✓ Complete Routine</button>
-        <button class="btn btn-secondary" id="quit-workout" style="margin-top:8px">Discard</button>
+        <button class="btn btn-danger-quiet" id="discard-routine" style="margin-top:6px">Discard workout</button>
       </div>
     </div>`;
   document.querySelectorAll('[data-felt]').forEach(el=>el.addEventListener('click',()=>{
@@ -1792,12 +2402,10 @@ function renderGuidedComplete(){
     saveWorkout();
   }));
   document.getElementById('complete-routine')?.addEventListener('click',async()=>{
-    const durationSec=Math.round((Date.now()-w.durationStart)/1000);
-    const log={date:todayStr(),routineId:w.routineId,routineName:w.routineName,mode:'guided',sets:[],durationSec,feltLike:w.feltLike||2};
-    const id=await dbPut('logs',log);log.id=id;
-    state.logs.push(log);endWorkout();showToast('Workout logged! 🎉');nav('today');
+    await saveWorkoutLog(w,'guided');
+    showToast('Workout logged! 🎉');nav('today');
   });
-  document.getElementById('quit-workout')?.addEventListener('click',()=>showConfirm('Discard workout?','Progress will not be saved.',()=>{endWorkout();nav('today');}));
+  document.getElementById('discard-routine')?.addEventListener('click',()=>showConfirm('Discard workout?','Progress will not be saved.',()=>{endWorkout();nav('today');}));
 }
 
 
@@ -1849,7 +2457,10 @@ document.addEventListener('DOMContentLoaded',init);
 // killed without any further events, and pagehide may be all we get.
 window.addEventListener('pagehide',()=>{ if(state.workout) saveWorkout(); });
 document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='hidden'){ if(state.workout) saveWorkout(); }
+  if(document.visibilityState==='hidden'){ if(state.workout) saveWorkout(); return; }
+  // The browser drops the screen wake lock whenever the page is hidden, so
+  // coming back from the lock screen or another app has to re-request it.
+  if(state.workout) acquireWakeLock();
 });
 
 // Safety net: a scrolled body misplaces the bottom bar after rotating on iOS.
