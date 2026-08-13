@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#0f0f0f">
+<meta name="theme-color" content="#1c1c1e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Tiltboard">
@@ -29,6 +29,13 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font-body)}
   --nav-h:60px;
   --safe-t:env(safe-area-inset-top,0px);
   --safe-b:min(env(safe-area-inset-bottom,0px),34px);
+  /* iOS 26/27 draw a "scroll edge effect" across the top of the screen: a band
+     of progressive blur under the status bar. There is no web-facing way to
+     turn it off, so keep the band filled with flat background and push real
+     content below it — blurring a solid colour is invisible. Collapses to 0
+     where there is no top inset (desktop, older iOS). Raise if the title
+     still looks soft on device. */
+  --edge-fade:min(env(safe-area-inset-top,0px),12px);
   --transition:180ms ease;
 }
 [data-theme="dark"]{
@@ -71,7 +78,9 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font-body)}
 /* ===== LAYOUT ===== */
 html,body{background:var(--bg2);margin:0;padding:0}
 /* dvh tracks the real viewport through rotations and URL-bar show/hide */
-#app{display:flex;flex-direction:column;height:100%;height:100dvh;overflow:hidden;padding-top:var(--safe-t)}
+/* The padding keeps every scrolling surface clear of the top blur band, so the
+   only thing iOS smears up there is the flat page background. */
+#app{display:flex;flex-direction:column;height:100%;height:100dvh;overflow:hidden;padding-top:calc(var(--safe-t) + var(--edge-fade));background:var(--bg2)}
 #view{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 /* Docked, in-flow bar on desktop — the content area sizes around it automatically */
 #nav{flex-shrink:0;height:calc(var(--nav-h) + var(--safe-b));background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:var(--safe-b)}
@@ -429,10 +438,23 @@ async function init(){
 
 function applyTheme(t){
   document.documentElement.setAttribute('data-theme',t);
+  // iOS 26+ tints the status bar with theme-color and then blurs across the
+  // seam, so a colour that does not match the surface actually painted at the
+  // top of the page reads as a smudge. Take it from the live theme rather than
+  // a hardcoded list, which drifts (warm and auto both used to get near-black).
   const meta = document.querySelector('meta[name="theme-color"]');
-  if(meta) meta.content = t==='light'?'#f2f2f7':'#0f0f0f';
+  if(meta){
+    const top = getComputedStyle(document.documentElement).getPropertyValue('--bg2').trim();
+    if(top) meta.content = top;
+  }
   try { localStorage.setItem('tiltboard-theme', t); } catch(e) {}
 }
+// 'auto' flips with the system, and the status bar tint has to flip with it
+try{
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{
+    if(document.documentElement.getAttribute('data-theme')==='auto') applyTheme('auto');
+  });
+}catch(e){}
 async function saveSettings(patch){
   Object.assign(state.settings,patch);
   await dbPut('settings',{...state.settings, id:'main'});

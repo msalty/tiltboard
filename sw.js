@@ -7,7 +7,7 @@
 // any web server.
 const CACHE_PREFIX = 'tiltboard';
 const CACHE_SEP = '::';
-const CACHE_VERSION = 'v11';
+const CACHE_VERSION = 'v12';
 
 // self.location is the sw.js URL, so './' is this copy's install directory:
 // https://host/tiltboard/ when deployed to a subdirectory, https://host/ at a
