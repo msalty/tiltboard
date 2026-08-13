@@ -29,13 +29,14 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font-body)}
   --nav-h:60px;
   --safe-t:env(safe-area-inset-top,0px);
   --safe-b:min(env(safe-area-inset-bottom,0px),34px);
-  /* iOS 26/27 draw a "scroll edge effect" across the top of the screen: a band
-     of progressive blur under the status bar. There is no web-facing way to
-     turn it off, so keep the band filled with flat background and push real
-     content below it — blurring a solid colour is invisible. Collapses to 0
-     where there is no top inset (desktop, older iOS). Raise if the title
-     still looks soft on device. */
-  --edge-fade:min(env(safe-area-inset-top,0px),12px);
+  /* iOS 26/27 draw a "scroll edge effect": a band of progressive blur across
+     the leading edge of a scroller, and only on a scroller that can actually
+     scroll — a short page shows none. Nothing on the web platform opts out of
+     it. It blurs whatever is painted topmost in the band, so the fix is to
+     park a flat opaque strip there and keep text below it; blurring a solid
+     colour is invisible. Collapses to 0 where there is no top inset (desktop,
+     older iOS). Raise this if the heading still looks soft on device. */
+  --edge-fade:min(env(safe-area-inset-top,0px),24px);
   --transition:180ms ease;
 }
 [data-theme="dark"]{
@@ -78,10 +79,14 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font-body)}
 /* ===== LAYOUT ===== */
 html,body{background:var(--bg2);margin:0;padding:0}
 /* dvh tracks the real viewport through rotations and URL-bar show/hide */
-/* The padding keeps every scrolling surface clear of the top blur band, so the
-   only thing iOS smears up there is the flat page background. */
-#app{display:flex;flex-direction:column;height:100%;height:100dvh;overflow:hidden;padding-top:calc(var(--safe-t) + var(--edge-fade));background:var(--bg2)}
+#app{display:flex;flex-direction:column;height:100%;height:100dvh;overflow:hidden;padding-top:var(--safe-t);background:var(--bg2)}
 #view{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+/* #view is the scroller iOS hangs its blur band off, so the shield has to live
+   inside #view and stay pinned to its leading edge — padding above #view just
+   moves the band down with it. Sticky rather than fixed so it tracks the
+   scroller through rotation and keyboard resizes. Every view gets it, so the
+   ones with no header of their own (Today) are covered too. */
+#view::before{content:'';display:block;position:sticky;top:0;z-index:60;height:var(--edge-fade);background:var(--bg2)}
 /* Docked, in-flow bar on desktop — the content area sizes around it automatically */
 #nav{flex-shrink:0;height:calc(var(--nav-h) + var(--safe-b));background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:var(--safe-b)}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;color:var(--fg3);font-size:10px;cursor:pointer;padding:6px 4px;transition:color var(--transition)}
@@ -114,7 +119,8 @@ html,body{background:var(--bg2);margin:0;padding:0}
 }
 
 /* ===== HEADER ===== */
-.page-header{padding:16px 16px 8px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:50}
+/* Sticks below the blur shield, not under it, so the title is never clipped */
+.page-header{padding:16px 16px 8px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:var(--edge-fade);background:var(--bg2);z-index:50}
 .page-title{font-size:28px;font-weight:700;font-family:var(--font-head)}
 .hdr-btn{background:var(--bg3);border:none;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--fg2)}
 
